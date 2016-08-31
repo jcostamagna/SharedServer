@@ -8,7 +8,6 @@
     "email": "jic.costamagna@gmail.com"
   }],
   "scripts": {
-    "test": "vows --spec --isolate",
     "start": "nodejs   server.js"
   },
   "main": "server.js",
