@@ -1,0 +1,33 @@
+{
+  "name": "sharedserver",
+  "version": "1.0.0",
+  "description": "Es el SharedServer del tp Jobify | FIUBA",
+  "author": "Nicolas Moccagatta <nicomoccagatta@gmail.com>",
+  "contributors": [{
+    "name": "Juan Costamagna",
+    "email": "jic.costamagna@gmail.com"
+  }],
+  "scripts": {
+    "test": "vows --spec --isolate",
+    "start": "nodejs   server.js"
+  },
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicomoccagatta/SharedServer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nodejitsu/nicomoccagatta/SharedServer/issues"
+  },
+  "keywords": [
+    "sharedserver",
+    "jobify",
+    "fiuba"
+  ],
+  "dependencies": {
+    "express": "^4.13.3"
+  },
+  "preferGlobal": true,
+  "private": true,
+  "license": "none"
+}
