@@ -1,3 +1,5 @@
 language: node_js
 node_js:
   - "4.2.6"
+notifications:
+  slack: 7552-tallerii:TduWD2Mt2Vjsf9Or2hwCqYmK
