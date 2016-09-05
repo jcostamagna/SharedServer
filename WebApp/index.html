@@ -1,0 +1,80 @@
+<html lang="en" >
+<head>
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body ng-app="App" ng-cloak>
+  <!--
+    Your HTML content here
+  -->  
+
+<!--
+<div ng-app="App" layout="column" layout-align="center center" layout-fill>
+  <div class="loginBox md-whiteframe-z1", layout="column">
+    <md-toolbar>
+      <h2 class="md-toolbar-tools" span>Login</h2>
+      </md-toolbar>
+    <md-content class="md-padding", layout="column"></md-content>
+      <md-input-container></md-input-container>
+        <label input-type="email" ng-model="username"></label>
+        <md-input-container input-type="password" ng-model="password"></md-input-container>
+        <div ng-controller="AppCtrl" layout="row" layout-align="center center">
+          <md-button class="md-raised md-primary" ng-click="Login($event)">Login</md-button>
+        </div>
+  </div>
+</div>
+-->
+
+
+  <div class="padded" md-whiteframe="1"   flex-sm="45" flex-gt-sm="35" flex-gt-md="25" layout layout-align="center center"></div>
+
+  <hgroup>
+    <h1>Jobify</h1>
+  </hgroup>
+
+<form>
+  <div class="md-inline-form">
+  <md-input-container class="md-block" flex-gt-sm>
+    <label>Usuario</label>
+    <input ng-model="user.name">
+  </md-input-container>
+  </div>
+
+
+  <div class="md-inline-form">
+  <md-input-container class="md-block" flex-gt-sm>
+    <label>Clave</label>
+    <input ng-model="user.password" type="password">
+  </md-input-container>
+  </div>
+
+
+  <div ng-controller="AppCtrl" ng-cloak>
+    <section layout="row" layout-sm="column" layout-align="center center">
+    <md-button type="button" class="md-raised md-primary" ng-click="Login($event)">Iniciar Sesion</md-button>
+    </section>
+  </div>
+</form>
+
+
+
+
+
+  
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+  <!-- El js de la app -->
+  <script src="js/login.js"></script>
+  
+</body>
+</html>
