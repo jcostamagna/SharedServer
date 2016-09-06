@@ -1,12 +1,17 @@
 div {
-  border: 2px solid darkblue;
+  border: 1px solid black;
 }
 
+md-sidenav, md-list {
+  background-color: rgb(40,50,150);
+}
 
 .box3, .box2, .box1 {  
   display:flex;
   box-sizing: border-box;
   min-width:100%;
+
+  background-color: rgb(63,81,181);
 }
 
 .box1 {  

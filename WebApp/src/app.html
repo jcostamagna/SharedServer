@@ -10,19 +10,32 @@
 
   <md-toolbar layout="row" class="md-toolbar-tools">
     <md-button class="menu md-icon-button" hide-gt-sm ng-click="toggleList()"
-               aria-label="Show User List">
+               aria-label="Show List">
 <!-- <md-icon md-svg-src="svg/menu.svg" aria-label="menu "></md-icon> -->
     </md-button>
-    <h1>Jobify Admin</h1>
+    Jobify Admin
   </md-toolbar>
 
   <div flex layout="row">
-    <md-sidenav class="md-whiteframe-4dp" md-is-locked-open="$mdMedia('gt-sm')"
+    <md-sidenav md-is-locked-open="$mdMedia('gt-sm')"
                 md-component-id="left" ng-click="toggleList()">
       <md-content>
-        sidenav
+          <md-list layout="column">
+              <md-itemlist layout="column">
+                <md-button class="md-raised md-primary">JOB POSITIONS</md-button>
+              </md-itemlist>
+
+              <md-itemlist layout="column">
+                <md-button class="md-raised md-primary">SKILLS</md-button>
+              </md-itemlist>
+
+              <md-itemlist layout="column">
+                <md-button class="md-raised md-primary">CATEGORIAS</md-button>
+              </md-itemlist>
+          </md-list>
       </md-content>
     </md-sidenav>
+
     <div layout="column" flex>
       <div class="box1">
         70
