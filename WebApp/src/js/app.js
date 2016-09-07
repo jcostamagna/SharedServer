@@ -8,4 +8,8 @@ angular.module('App',['ngMaterial'])
     $mdSidenav('left').toggle();
   }
 
+	$scope.sizes = [
+        {size:"md-48",padding:10}
+      ];
+
 });
