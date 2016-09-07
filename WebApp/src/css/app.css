@@ -1,7 +1,3 @@
-div {
-  border: 1px solid black;
-}
-
 md-sidenav, md-list {
   background-color: rgb(40,50,150);
 }
@@ -28,7 +24,3 @@ md-sidenav, md-list {
   max-height:30%;
   flex:1 1 30%;
 }
-
-
-.icondemoFontIconsWithLigatures .material-icons.md-48 {
-    font-size: 35px; }

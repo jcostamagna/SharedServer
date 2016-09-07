@@ -12,17 +12,19 @@
 
   <div flex layout="row">
     <md-sidenav md-is-locked-open="$mdMedia('gt-sm')"
-                md-component-id="left" ng-click="toggleList()">
+                md-component-id="left" ng-click="toggleList()" style="border: 0.5px solid black; width:420px;">
       <md-content>
           <md-list layout="column">
 
-                <md-button>
-                <img src="svg/jobify_logo.svg" style="height:145px;">
-                </md-button>
+              <md-button href="app.html">
+              <img src="svg/jobify_logo.svg" style="height:145px; width:420px;"
+                        layout-align="center center" aria-label="icon ">
+              </md-button>
 
               <div class="md-list-item">
               <md-itemlist layout="column">
-                <md-button class="md-toolbar-tools md-raised md-primary" layout-align="center center">JOB POSITIONS</md-button>
+                <md-button class="md-toolbar-tools md-raised md-primary" layout-align="center center"
+                      style="border: 0.5px solid black;">JOB POSITIONS</md-button>
               </div>
                   <md-button class="md-raised md-secondary">
                       Listado
@@ -34,7 +36,8 @@
 
               <div class="md-list-item">
               <md-itemlist layout="column">
-                <md-button class="md-toolbar-tools md-raised md-primary" layout-align="center center">SKILLS</md-button>
+                <md-button class="md-toolbar-tools md-raised md-primary" layout-align="center center"
+                      style="border: 0.5px solid black;">SKILLS</md-button>
               </div>
                   <md-button class="md-raised md-secondary">
                       Listado
@@ -46,7 +49,8 @@
 
               <div class="md-list-item">
               <md-itemlist layout="column">
-                <md-button class="md-toolbar-tools md-raised md-primary" layout-align="center center">CATEGORIAS</md-button>
+                <md-button class="md-toolbar-tools md-raised md-primary" layout-align="center center"
+                      style="border: 0.5px solid black;">CATEGORIAS</md-button>
               </div>
                   <md-button class="md-raised md-secondary">
                       Listado
@@ -56,17 +60,52 @@
       </md-content>
     </md-sidenav>
 
-    <div layout="column" flex>
-      <md-toolbar layout="row" class="md-toolbar-tools" style="background-color:rgb(40,50,150);">
-        <md-button class="menu md-icon-button" hide-gt-sm ng-click="toggleList()"
-                   aria-label="Show List">
-      <md-icon md-svg-src="svg/menu.svg" aria-label="menu "></md-icon>
-        </md-button>
-       <h1 class="md-toolbar-tools" style="font-size:30px;" layout-align="center center">Jobify Admin</h1>
+    <div layout="column" class="relative" layout-fill role="main">
+      <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd($event)">
+        <ng-md-icon icon="add"></ng-md-icon>
+      </md-button>  
+
+      <md-toolbar ng-show="!showSearch" class="md-whiteframe-2dp size-content-toolbar">
+        <div class="md-toolbar-tools">
+          <md-button ng-click="toggleList()" hide-gt-md aria-label="Menu">
+            <ng-md-icon icon="menu"></ng-md-icon>
+          </md-button>
+          <h3>
+            Administrador
+          </h3>
+          <span flex></span>
+          <md-button aria-label="Search" ng-click="showSearch = !showSearch">
+            <ng-md-icon icon="search"></ng-md-icon>
+          </md-button>
+          <md-button aria-label="Open Settings" ng-click="showListBottomSheet($event)">
+            <ng-md-icon icon="more_vert"></ng-md-icon>
+          </md-button>
+        </div>
+      </md-toolbar>
+      <md-toolbar class="md-hue-1 md-whiteframe-2dp" ng-show="showSearch">
+        <div class="md-toolbar-tools">
+          <md-button ng-click="showSearch = !showSearch" aria-label="Back">
+            <ng-md-icon icon="arrow_back"></ng-md-icon>
+          </md-button>
+          <md-input-container md-theme="input" layout-align="center bottom" flex>
+            <label>&nbsp;</label>
+            <input ng-model="search.who" placeholder="enter search">
+          </md-input-container>
+          <md-button aria-label="Search" ng-click="showSearch = !showSearch">
+            <ng-md-icon icon="search"></ng-md-icon>
+          </md-button>
+          <md-button aria-label="Open Settings" ng-click="showListBottomSheet($event)">
+            <ng-md-icon icon="more_vert"></ng-md-icon>
+          </md-button>
+        </div>
+       
       </md-toolbar>
 
+
+
+
       <div class="box1">
-        70
+        Panel Dinamico
       </div>
     </div>
 
@@ -84,6 +123,7 @@
 
   <!-- Angular Material Library -->
   <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <script src="//cdn.jsdelivr.net/angular-material-icons/0.4.0/angular-material-icons.min.js"></script> 
 
   <!-- El js de la app -->
   <script src="js/app.js"></script>
