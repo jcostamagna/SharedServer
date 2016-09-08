@@ -1,3 +1,5 @@
+var querystring = require('querystring');
+
 function iniciar(response, postData) {
   console.log("Manipulador de Peticion 'iniciar' fue llamado.");
 
