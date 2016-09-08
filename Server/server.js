@@ -20,7 +20,7 @@ function iniciar(route, handle) {
 
   }
 
-  http.createServer(onRequest).listen(8888);
+  http.createServer(onRequest).listen(process.env.PORT || 5000);
   console.log("Servidor Iniciado");
 }
 
