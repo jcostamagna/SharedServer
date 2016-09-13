@@ -52,7 +52,7 @@
                       Categorias
                   </md-button>
               </md-itemlist>
-x
+
               <div class="md-list-item">
               <md-itemlist layout="column">
                 <md-button class="md-toolbar-tools md-raised md-primary" layout-align="center center"
@@ -142,6 +142,10 @@ BARRA DE BUSQUEDA
         <md-toolbar class="md-table-toolbar alternate" ng-show="options.rowSelection && selected.length">
           <div class="md-toolbar-tools">
             <span>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</span>
+            <div flex></div>
+            <md-button class="md-icon-button">
+              <ng-md-icon icon="delete"></ng-md-icon>
+            </md-button>  
           </div>
         </md-toolbar>
         
