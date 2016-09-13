@@ -13,6 +13,7 @@ md-sidenav, md-list {
 .box1 {  
   max-height:100%;
   flex:1 1 70%;
+  background-color: rgb(180,180,230);
 }
 
 .box2 {
@@ -23,4 +24,23 @@ md-sidenav, md-list {
   height:30%;
   max-height:30%;
   flex:1 1 30%;
+}
+
+
+
+
+
+md-toolbar.md-table-toolbar.alternate .md-toolbar-tools {
+  font-size: 16px;
+}
+
+md-card:first-child {
+  padding: 8px 8px 8px 24px;
+}
+
+.checkboxes > md-checkbox {
+  margin: 0;
+  padding: 16px;
+  min-width: 300px;
+  flex: 0 0 auto;
 }

@@ -6,6 +6,12 @@
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
   <link rel="stylesheet" href="css/app.css">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="http://rawgit.com/daniel-nagy/md-data-table/master/dist/md-data-table.css">
+
+
 </head>
 <body ng-app="App" ng-cloak layout="column" ng-controller="AppController">
 
@@ -46,7 +52,7 @@
                       Categorias
                   </md-button>
               </md-itemlist>
-
+x
               <div class="md-list-item">
               <md-itemlist layout="column">
                 <md-button class="md-toolbar-tools md-raised md-primary" layout-align="center center"
@@ -61,10 +67,15 @@
     </md-sidenav>
 
     <div layout="column" class="relative" layout-fill role="main">
+
+    <!-- FAB ADD
       <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd($event)">
         <ng-md-icon icon="add"></ng-md-icon>
       </md-button>  
+                  -->
 
+
+    <!--TOOLBAR PRINCIPAL -->
       <md-toolbar ng-show="!showSearch" class="md-whiteframe-2dp size-content-toolbar">
         <div class="md-toolbar-tools">
           <md-button ng-click="toggleList()" hide-gt-md aria-label="Menu">
@@ -74,20 +85,23 @@
             Administrador
           </h3>
           <span flex></span>
+<!--
+BARRA DE BUSQUEDA
           <md-button aria-label="Search" ng-click="showSearch = !showSearch">
             <ng-md-icon icon="search"></ng-md-icon>
           </md-button>
           <md-button aria-label="Open Settings" ng-click="showListBottomSheet($event)">
             <ng-md-icon icon="more_vert"></ng-md-icon>
           </md-button>
+-->
         </div>
       </md-toolbar>
-      <md-toolbar class="md-hue-1 md-whiteframe-2dp" ng-show="showSearch">
+<!--      <md-toolbar class="md-hue-1 md-whiteframe-2dp" ng-show="showSearch">
         <div class="md-toolbar-tools">
           <md-button ng-click="showSearch = !showSearch" aria-label="Back">
             <ng-md-icon icon="arrow_back"></ng-md-icon>
           </md-button>
-          <md-input-container md-theme="input" layout-align="center bottom" flex>
+          <md-input-container layout-align="center bottom" flex>
             <label>&nbsp;</label>
             <input ng-model="search.who" placeholder="enter search">
           </md-input-container>
@@ -100,12 +114,78 @@
         </div>
        
       </md-toolbar>
-
+-->
 
 
 
       <div class="box1">
-        Panel Dinamico
+
+
+
+    <md-content layout="column" flex ng-controller="nutritionController">
+            
+      <md-card>
+        
+        <md-toolbar class="md-table-toolbar md-default" ng-hide="options.rowSelection && selected.length">
+          <div class="md-toolbar-tools">
+            <span>Listado</span>
+            <div flex></div>
+            <md-button class="md-icon-button" ng-click="showAdd($event)">
+              <ng-md-icon icon="add"></ng-md-icon>
+            </md-button>  
+            <md-button class="md-icon-button" ng-click="loadStuff()">
+              <ng-md-icon icon="refresh"></md-icon>
+            </md-button>
+          </div>
+        </md-toolbar>
+        
+        <md-toolbar class="md-table-toolbar alternate" ng-show="options.rowSelection && selected.length">
+          <div class="md-toolbar-tools">
+            <span>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</span>
+          </div>
+        </md-toolbar>
+        
+        <md-table-container>
+          <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">
+            <thead ng-if="!options.decapitate" md-head md-order="query.order" md-on-reorder="logOrder">
+              <tr md-row>
+                <th md-column md-order-by="name"><span style="font-size:16px;">Job Position</span></th>
+                <th md-column md-order-by="type"><span style="font-size:16px;">Categoria</span></th>
+                <th md-column md-order-by="comment">
+                  <md-icon>comments</md-icon>
+                  <span style="font-size:16px;">Descripcion</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody md-body>
+              <tr md-row md-select="dessert" md-on-select="logItem" md-auto-select="options.autoSelect" ng-disabled="dessert.calories.value > 400" ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+                <td md-cell>{{dessert.name}}</td>
+                <td md-cell>
+                  <md-select ng-model="dessert.type" placeholder="Other">
+                    <md-option ng-value="type" ng-repeat="type in getTypes()">{{type}}</md-option>
+                  </md-select>
+                </td>
+                <td md-cell ng-click="editComment($event, dessert)" ng-class="{'md-placeholder': !dessert.comment}">
+                  {{dessert.comment || 'Add a comment'}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </md-table-container>
+
+        <md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{desserts.count}}" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks" md-on-paginate="logPagination"></md-table-pagination>
+      </md-card>
+    </md-content>
+    
+
+
+
+
+
+
+
+
+
       </div>
     </div>
 
@@ -119,6 +199,9 @@
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+
+  <script src="http://rawgit.com/daniel-nagy/md-data-table/master/dist/md-data-table.js"></script>
 
 
   <!-- Angular Material Library -->
