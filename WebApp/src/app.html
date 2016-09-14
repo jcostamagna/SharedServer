@@ -68,12 +68,6 @@
 
     <div layout="column" class="relative" layout-fill role="main">
 
-    <!-- FAB ADD
-      <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd($event)">
-        <ng-md-icon icon="add"></ng-md-icon>
-      </md-button>  
-                  -->
-
 
     <!--TOOLBAR PRINCIPAL -->
       <md-toolbar ng-show="!showSearch" class="md-whiteframe-2dp size-content-toolbar">
@@ -85,40 +79,12 @@
             Administrador
           </h3>
           <span flex></span>
-<!--
-BARRA DE BUSQUEDA
-          <md-button aria-label="Search" ng-click="showSearch = !showSearch">
-            <ng-md-icon icon="search"></ng-md-icon>
-          </md-button>
-          <md-button aria-label="Open Settings" ng-click="showListBottomSheet($event)">
-            <ng-md-icon icon="more_vert"></ng-md-icon>
-          </md-button>
--->
         </div>
       </md-toolbar>
-<!--      <md-toolbar class="md-hue-1 md-whiteframe-2dp" ng-show="showSearch">
-        <div class="md-toolbar-tools">
-          <md-button ng-click="showSearch = !showSearch" aria-label="Back">
-            <ng-md-icon icon="arrow_back"></ng-md-icon>
-          </md-button>
-          <md-input-container layout-align="center bottom" flex>
-            <label>&nbsp;</label>
-            <input ng-model="search.who" placeholder="enter search">
-          </md-input-container>
-          <md-button aria-label="Search" ng-click="showSearch = !showSearch">
-            <ng-md-icon icon="search"></ng-md-icon>
-          </md-button>
-          <md-button aria-label="Open Settings" ng-click="showListBottomSheet($event)">
-            <ng-md-icon icon="more_vert"></ng-md-icon>
-          </md-button>
-        </div>
-       
-      </md-toolbar>
--->
 
 
 
-      <div class="box1">
+  <div class="box1">
 
 
 
@@ -126,10 +92,13 @@ BARRA DE BUSQUEDA
             
       <md-card style="background-color:rgb(240,240,240);">
         
-        <md-toolbar class="md-table-toolbar md-default" ng-hide="options.rowSelection && selected.length">
+        <md-toolbar class="md-table-toolbar md-default" ng-hide="options.rowSelection && selected.length" ng-show="!showSearch">
           <div class="md-toolbar-tools" style="background-color:rgb(190,190,220);">
             <span>Listado</span>
             <div flex></div>
+            <md-button class="md-icon-button" ng-click="showSearch = !showSearch">
+              <ng-md-icon icon="search"></ng-md-icon>
+            </md-button>  
             <md-button class="md-icon-button" ng-click="showAdd($event)">
               <ng-md-icon icon="add"></ng-md-icon>
             </md-button>  
@@ -139,6 +108,7 @@ BARRA DE BUSQUEDA
           </div>
         </md-toolbar>
         
+        <!-- BARRA DE BORRADO -->
         <md-toolbar class="md-table-toolbar alternate" ng-show="options.rowSelection && selected.length">
           <div class="md-toolbar-tools">
             <span>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</span>
@@ -148,6 +118,24 @@ BARRA DE BUSQUEDA
             </md-button>  
           </div>
         </md-toolbar>
+
+
+        <!-- BARRA DE BUSQUEDA -->
+        <md-toolbar class="md-table-toolbar md-default" ng-show="showSearch">
+          <div class="md-toolbar-tools" style="background-color:rgb(190,190,220);">
+            <md-button class="md-icon-button" ng-click="showSearch = !showSearch">
+              <ng-md-icon icon="arrow_back"></ng-md-icon>
+            </md-button>
+            <md-input-container flex>
+              <label>&nbsp;</label>
+              <input ng-model="search.who" placeholder="Enter search">
+            </md-input-container>
+          </div>
+        </md-toolbar>
+
+
+
+
         
         <md-table-container>
           <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">
@@ -196,8 +184,6 @@ BARRA DE BUSQUEDA
   </div>
 
 
-</body>
-  
   <!-- Angular Material requires Angular.js Libraries -->
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>

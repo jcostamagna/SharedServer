@@ -26,7 +26,9 @@ md-sidenav, md-list {
   flex:1 1 30%;
 }
 
-
+md-input-container .md-errors-spacer{
+ min-height: 0px !important;
+}
 
 
 
