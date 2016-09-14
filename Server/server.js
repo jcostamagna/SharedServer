@@ -1,5 +1,7 @@
 var http = require("http");
 var url = require("url");
+var express     = require('express');  
+var app         = express();
 
 function iniciar(route, handle) {
   function onRequest(request, response) {
@@ -23,5 +25,11 @@ function iniciar(route, handle) {
   http.createServer(onRequest).listen(process.env.PORT || 5000);
   console.log("Servidor Iniciado");
 }
+
+// Carga una vista HTML simple donde irá nuestra Single App Page
+// Angular Manejará el Frontend
+app.get('*', function(req, res) {  
+    res.sendfile('./public/index.html');                
+});
 
 exports.iniciar = iniciar;

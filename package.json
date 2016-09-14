@@ -23,6 +23,7 @@
     "fiuba"
   ],
   "dependencies": {
+    "angular": "latest",
     "pg": "4.x",
     "express": "^4.13.3"
   },
