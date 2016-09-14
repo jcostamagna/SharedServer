@@ -1,4 +1,4 @@
-var app = angular.module('App',['ngMaterial', 'ngMdIcons', 'md.data.table']);
+var app = angular.module('App', ['ngMaterial', 'ngMdIcons', 'md.data.table', 'ngRoute']);
 
 app.controller('AppController', ['$scope','$mdSidenav', '$mdDialog', function($scope,$mdSidenav, $mdDialog) {
   /**
@@ -41,11 +41,38 @@ function DialogController($scope, $mdDialog) {
 
 
 
+app.config(function($routeProvider){
+  //configuración y definición de las rutas
+$routeProvider
+            .when("/", {
+                controller: "AppController",
+                templateUrl: "vistas/home.html"
+            })
+            .when("/listado-job-positions", {
+                controller: "AppController",
+                templateUrl: "vistas/listadoJobPos.html"
+            })
+            .when("/listado-job-categories", {
+                controller: "AppController",
+                templateUrl: "vistas/CategoriasJobPos.html"
+            })
+            .when("/listado-skills", {
+                controller: "AppController",
+                templateUrl: "vistas/listadoSkills.html"
+            })
+            .when("/listado-skills-categories", {
+                controller: "AppController",
+                templateUrl: "vistas/CategoriasSkills.html"
+            })
+            .when("/listado-categories", {
+                controller: "AppController",
+                templateUrl: "vistas/Categorias.html"
+            });
+})
 
 
 
-
-app.config(['$mdThemingProvider', function ($mdThemingProvider) {
+.config(['$mdThemingProvider', function ($mdThemingProvider) {
     'use strict';
     
  //   $mdThemingProvider.theme('default')

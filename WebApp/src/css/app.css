@@ -11,8 +11,7 @@ md-sidenav, md-list {
 }
 
 .box1 {  
-  max-height:100%;
-  flex:1 1 70%;
+  height: 90%;
   background-color: rgb(180,180,230);
 }
 
