@@ -12,6 +12,10 @@ const app = express();
 // Configuración
 app.use(express.static(path.join(__dirname,'/WebApp')));
 
+app.get('/test', function(req, res) {  
+    res.write('Prueba GET');
+    res.end();                
+});
 
 app.get('*', function(req, res) {  
     res.sendFile('WebApp/index.html');                
