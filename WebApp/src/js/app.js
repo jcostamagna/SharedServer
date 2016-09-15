@@ -1,4 +1,4 @@
-var app = angular.module('App', ['ngMaterial', 'ngMdIcons', 'md.data.table', 'ngRoute']);
+var app = angular.module('App', ['ngMaterial', 'ngMdIcons', 'md.data.table', 'ngRoute', 'ngAnimate']);
 
 app.controller('AppController', ['$scope','$mdSidenav', '$mdDialog', function($scope,$mdSidenav, $mdDialog) {
   /**
@@ -7,7 +7,6 @@ app.controller('AppController', ['$scope','$mdSidenav', '$mdDialog', function($s
   $scope.toggleList = function toggleList() {
     $mdSidenav('left').toggle();
   }
-
 
   $scope.showAdd = function(ev) {
     $mdDialog.show({
@@ -24,7 +23,6 @@ app.controller('AppController', ['$scope','$mdSidenav', '$mdDialog', function($s
 
 }]);
 
-
 function DialogController($scope, $mdDialog) {
   $scope.hide = function() {
     $mdDialog.hide();
@@ -36,10 +34,6 @@ function DialogController($scope, $mdDialog) {
     $mdDialog.hide(answer);
   };
 };
-
-
-
-
 
 app.config(function($routeProvider){
   //configuración y definición de las rutas
@@ -69,8 +63,6 @@ $routeProvider
                 templateUrl: "vistas/Categorias.html"
             });
 })
-
-
 
 .config(['$mdThemingProvider', function ($mdThemingProvider) {
     'use strict';
@@ -203,4 +195,36 @@ $routeProvider
     console.log('page: ', page);
     console.log('limit: ', limit);
   }
+}]);
+
+app.animation('.slide-toggle', ['$animateCss', function($animateCss) {
+    return {
+        addClass: function(element, className, doneFn) {
+            if (className == 'ng-hide') {
+                var animator = $animateCss(element, {                    
+                    to: {height: '0px', opacity: 0}
+                });
+                if (animator) {
+                    return animator.start().finally(function() {
+                        element[0].style.height = '';
+                        doneFn();
+                    });
+                }
+            }
+            doneFn();
+        },
+        removeClass: function(element, className, doneFn) {
+            if (className == 'ng-hide') {
+                var height = element[0].offsetHeight;
+                var animator = $animateCss(element, {
+                    from: {height: '0px', opacity: 0},
+                    to: {height: height + 'px', opacity: 1}
+                });
+                if (animator) {
+                 return animator.start().finally(doneFn);
+                }
+            }
+            doneFn();
+        }
+    };
 }]);
