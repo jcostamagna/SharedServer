@@ -61,10 +61,19 @@
             <tbody md-body>
               <tr md-row md-select="dessert" md-on-select="logItem" md-auto-select="options.autoSelect" ng-disabled="dessert.calories.value > 400" ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
                 <td md-cell>{{dessert.name}}</td>
-                <td md-cell>
+                <td md-cell>                
+                  <md-chips>
+                    <md-chip>Programador Junior</md-chip>
+                    <md-chip>Programador Senior</md-chip>
+                    <md-chip>Software</md-chip>
+                    <md-chip>CEO</md-chip>
+                    <md-chip>Directivo</md-chip>
+                  </md-chips>
+                  <!--
                   <md-select ng-model="dessert.type" placeholder="Other">
                     <md-option ng-value="type" ng-repeat="type in getTypes()">{{type}}</md-option>
                   </md-select>
+                  -->
                 </td>
               </tr>
             </tbody>
