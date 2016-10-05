@@ -39,7 +39,7 @@
         <!-- BARRA DE BUSQUEDA -->
         <md-toolbar class="md-table-toolbar md-default" ng-show="showSearch">
           <div class="md-toolbar-tools" style="background-color:rgb(190,190,220);">
-            <md-button class="md-icon-button" ng-click="showSearch = !showSearch" aria-label="Back ">
+            <md-button class="md-icon-button" ng-click="showSearch = !showSearch; search.who=''" aria-label="Back ">
               <ng-md-icon icon="arrow_back"></ng-md-icon>
             </md-button>
             <md-input-container flex>
@@ -59,7 +59,7 @@
               </tr>
             </thead>
             <tbody md-body>
-              <tr md-row md-select="dessert" md-on-select="logItem" md-auto-select="options.autoSelect" ng-disabled="dessert.calories.value > 400" ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+              <tr md-row md-select="dessert" md-on-select="logItem" md-auto-select="options.autoSelect" ng-repeat="dessert in desserts.data | filter: search.who | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
                 <td md-cell>{{dessert.name}}</td>
                 <td md-cell>                
                   <md-chips>
