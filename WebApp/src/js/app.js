@@ -1,6 +1,44 @@
 var app = angular.module('App', ['ngMaterial', 'ngMdIcons', 'md.data.table', 'ngRoute', 'ngAnimate']);
 
-app.controller('AppController', ['$scope','$mdSidenav', '$mdDialog', function($scope,$mdSidenav, $mdDialog) {
+app.controller('AppController', ['$scope','$mdSidenav','$mdDialog','$http', function($scope,$mdSidenav, $mdDialog,$http) {
+  $scope.formData = {};
+  $scope.todoData = {};
+  // Get all todos
+  $http.get('/job_positions')
+  .success((data) => {
+    $scope.todoData = data;
+    console.log(data);
+  })
+  .error((error) => {
+    console.log('Error: ' + error);
+  });
+  // Create a new todo
+  $scope.createJP = () => {
+    $http.post('/job_positions', $scope.formData)
+    .success((data) => {
+      $scope.formData = {};
+      $scope.todoData = data;
+      console.log(data);
+    })
+    .error((error) => {
+      console.log('Error: ' + error);
+    });
+  };
+  // Delete a todo
+  $scope.deleteTodo = (todoID) => {
+    $http.delete('/job_positions/' + todoID)
+    .success((data) => {
+      $scope.todoData = data;
+      console.log(data);
+    })
+    .error((data) => {
+      console.log('Error: ' + data);
+    });
+  };
+
+
+
+
   /**
    * Hide or Show the 'left' sideNav area
    */
