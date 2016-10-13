@@ -4,7 +4,7 @@ import requests
 import json
 #~ import responses
 #~ URL = 'http://localhost:8080'
-URL = 'https://tallersharedserver.herokuapp.com/'
+URL = 'https://tallersharedserver.herokuapp.com'
 
 
 class TestCase(unittest.TestCase):
