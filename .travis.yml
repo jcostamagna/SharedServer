@@ -4,6 +4,8 @@ node_js:
 python:
   - "2.7"
   - "3.4"
+install:
+  - sudo pip install requests
 script:
   - python RestAPITest.py
 notifications:
