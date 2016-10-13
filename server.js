@@ -139,8 +139,43 @@ app.post('/categories', function(req, res, next){
     // SQL Query > Insert Data
     var query = client.query('INSERT INTO categorias(nombre, descripcion) values($1, $2)',
     [data.nombre, data.descripcion]);
+    
+    query.on('error', function(err) {
+		return res.status(500).json({success: false, data: err, context: '/categories'});
+	});
 
         // After all data is returned, close connection and return results
+	query.on('end', function() {
+		done();
+		return res.status(201).json(req.body);
+	});
+  });
+
+});
+
+//Update Category
+app.post('/categories/:category', function(req, res, next){
+  // Grab data from http request
+  var category = req.params.category;
+  var data = {nombre: req.body.category.name, descripcion: req.body.category.description};
+  
+  // Get a Postgres client from the connection pool  
+  pg.connect(connectionString, function(err, client, done) {
+    // Handle connection errors
+    if(err) {
+      done();
+      console.log(err);
+      return res.status(500).json({success: false, data: err, context: '/categories'});
+    }
+    // SQL Query > Insert Data
+    var query = client.query('UPDATE categorias SET nombre=($1), descripcion=($2) WHERE nombre=($3)',
+    [data.nombre, data.descripcion, category]);
+    
+    query.on('error', function(err) {
+		return res.status(500).json({success: false, data: err, context: '/categories'});
+	});
+
+    // After all data is returned, close connection and return results
 	query.on('end', function() {
 		done();
 		return res.status(201).json(req.body);
