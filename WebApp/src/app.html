@@ -32,14 +32,14 @@
                       style="border: 0.5px solid black;" ng-click="slideToggle_JP=!slideToggle_JP">
                       JOB POSITIONS
               </md-button>
-              <md-button class="md-raised md-secondary slide-toggle" href="#/listado-job-positions" 
-                                    ng-show="slideToggle_JP" ng-click="toggleList()">
-                      Listado
-              </md-button>
-              <md-button class="md-raised md-secondary slide-toggle" href="#/listado-job-categories" 
-                                    ng-show="slideToggle_JP" ng-click="toggleList()">
-                      Categorias
-              </md-button>
+              <div ng-show="slideToggle_JP" layout ="column"  ng-click="toggleList()">
+                <md-button class="md-raised md-secondary slide-toggle" href="#/listado-job-positions">
+                        Listado
+                </md-button>
+                <md-button class="md-raised md-secondary slide-toggle" href="#/listado-job-categories">
+                        Categorias
+                </md-button>
+              </div>
             </md-itemlist>
           </div>
 
@@ -49,27 +49,28 @@
                       style="border: 0.5px solid black;" ng-click="slideToggle_SK=!slideToggle_SK">
                       SKILLS
               </md-button>
-              <md-button class="md-raised md-secondary slide-toggle" href="#/listado-skills" 
-                                    ng-show="slideToggle_SK" ng-click="toggleList()">
-                      Listado
-              </md-button>
-              <md-button class="md-raised md-secondary slide-toggle" href="#/listado-skills-categories" 
-                                    ng-show="slideToggle_SK" ng-click="toggleList()">
-                      Categorias
-              </md-button>
+              <div ng-show="slideToggle_SK" ng-click="toggleList()" layout="column">
+                <md-button class="md-raised md-secondary slide-toggle" href="#/listado-skills">
+                        Listado
+                </md-button>
+                <md-button class="md-raised md-secondary slide-toggle" href="#/listado-skills-categories">
+                        Categorias
+                </md-button>
+              </div>
             </md-itemlist>
           </div>
 
           <div class="md-list-item">
             <md-itemlist layout="column">
               <md-button class="md-toolbar-tools md-raised md-primary" layout-align="center center"
-                      style="border: 0.5px solid black;" ng-click="slideToggle_Cat=!slideToggle_Cat">
-                      CATEGORIAS
+                        style="border: 0.5px solid black;" ng-click="slideToggle_Cat=!slideToggle_Cat">
+                        CATEGORIAS
               </md-button>
-              <md-button class="md-raised md-secondary slide-toggle" href="#/listado-categories" 
-                                    ng-show="slideToggle_Cat" ng-click="toggleList()">
-                      Listado
-              </md-button>
+              <div ng-show="slideToggle_Cat" ng-click="toggleList()" layout="column">
+                <md-button class="md-raised md-secondary slide-toggle" href="#/listado-categories">
+                        Listado
+                </md-button>
+              </div>
             </md-itemlist>
           </div>
         </md-list>
@@ -98,4 +99,4 @@
   <script src="js/app.js"></script>
   
 </body>
-</html>
+</html> 

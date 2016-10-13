@@ -6,18 +6,18 @@
             <ng-md-icon icon="menu"></ng-md-icon>
           </md-button>
           <h3>
-            Job Positions   >   Listado
+            Job Positions > Listado
           </h3>
           <span flex></span>
+
+        <md-button aria-label="logout" class="md-icon-button" href="/">
+          <i class="material-icons md-36 menucolor">exit_to_app</i>
+        </md-button>
         </div>
       </md-toolbar>
 
 
-
   <div class="box1">
-
-
-
     <md-content layout="column" flex ng-controller="nutritionController">
             
       <md-card style="background-color:rgb(240,240,240);">
@@ -53,7 +53,7 @@
         <!-- BARRA DE BUSQUEDA -->
         <md-toolbar class="md-table-toolbar md-default" ng-show="showSearch">
           <div class="md-toolbar-tools" style="background-color:rgb(190,190,220);">
-            <md-button class="md-icon-button" ng-click="showSearch = !showSearch" aria-label="Back ">
+            <md-button class="md-icon-button" ng-click="showSearch = !showSearch; search.who=''" aria-label="Back ">
               <ng-md-icon icon="arrow_back"></ng-md-icon>
             </md-button>
             <md-input-container flex>
@@ -80,7 +80,7 @@
               </tr>
             </thead>
             <tbody md-body>
-              <tr md-row md-select="dessert" md-on-select="logItem" md-auto-select="options.autoSelect" ng-disabled="dessert.calories.value > 400" ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+              <tr md-row md-select="dessert" md-on-select="logItem" md-auto-select="options.autoSelect" ng-repeat="dessert in desserts.data | filter: search.who | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
                 <td md-cell>{{dessert.name}}</td>
                 <td md-cell>
                   <md-select ng-model="dessert.type" placeholder="Other">
@@ -88,7 +88,7 @@
                   </md-select>
                 </td>
                 <td md-cell ng-click="editComment($event, dessert)" ng-class="{'md-placeholder': !dessert.comment}">
-                  {{dessert.comment || 'Add a comment'}}
+                  {{dessert.comment || 'Add a description'}}
                 </td>
               </tr>
             </tbody>
@@ -99,9 +99,4 @@
       </md-card>
     </md-content>
     
-
-
-
-
-
   </div>

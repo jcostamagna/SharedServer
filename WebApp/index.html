@@ -19,11 +19,11 @@
     <h1>Jobify</h1>
   </hgroup>
 
-<form>
+<form  ng-controller="LoginCtrl">
   <div class="md-inline-form">
   <md-input-container class="md-block" flex-gt-sm>
     <label>Usuario</label>
-    <input ng-model="user.name">
+    <input ng-model="user.name" my-enter="Login($event)">
   </md-input-container>
   </div>
 
@@ -31,12 +31,12 @@
   <div class="md-inline-form">
   <md-input-container class="md-block" flex-gt-sm>
     <label>Clave</label>
-    <input ng-model="user.password" type="password">
+    <input ng-model="user.password" my-enter="Login($event)" type="password">
   </md-input-container>
   </div>
 
 
-  <div ng-controller="LoginCtrl" ng-cloak>
+  <div ng-cloak>
     <section layout="row" layout-sm="column" layout-align="center center">
     <md-button type="button" class="md-raised md-primary" ng-click="Login($event)">Iniciar Sesion</md-button>
     </section>
