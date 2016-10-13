@@ -1,5 +1,12 @@
 language: node_js
 node_js:
   - "4.2.6"
+python:
+  - "2.7"
+  - "3.4"
+install:
+  - sudo pip install requests
+script:
+  - python RestAPITest.py
 notifications:
   slack: 7552-tallerii:TduWD2Mt2Vjsf9Or2hwCqYmK
