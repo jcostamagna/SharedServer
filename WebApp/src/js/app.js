@@ -4,7 +4,7 @@ app.controller('AppController', ['$scope','$mdSidenav','$mdDialog','$http', func
   $scope.formData = {};
   $scope.todoData = {};
   // Get all todos
-  $http.get('/job_positions')
+  $http.get('/categories')
   .success((data) => {
     $scope.todoData = data;
     console.log(data);
