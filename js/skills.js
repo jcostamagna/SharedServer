@@ -1,5 +1,5 @@
 /**
- * Created by juan on 8/11/16.
+ * Created by juan on 10/11/16.
  */
 
 var express = require('express');
@@ -14,11 +14,15 @@ var client = new pg.Client(connectionString);
 client.connect();
 
 var query = client.query(
-    'CREATE TABLE IF NOT EXISTS categorias(nombre VARCHAR(40) PRIMARY KEY, descripcion VARCHAR(140))');
+    'CREATE TABLE IF NOT EXISTS skills(nombre VARCHAR(40), descripcion VARCHAR(140),' +
+    ' categoria VARCHAR(40) REFERENCES categorias(nombre), PRIMARY KEY (nombre, categoria))');
+query.on('error', function(err) {
+    console.log(err);
+});
 query.on('end', () => { client.end(); });
 
 
-//Funcion de testeo para limpiar la tabla de categorias
+//Funcion de testeo para limpiar la tabla de skills
 router.get('/test', function(req, res) {
     pg.connect(connectionString, function(err, client, done) {
         // Handle connection errors
@@ -29,7 +33,7 @@ router.get('/test', function(req, res) {
         }
 
         // SQL Query > DELETE Data
-        var query = client.query('DELETE FROM categorias');
+        var query = client.query('DELETE FROM skills');
 
         // After all data is returned, close connection and return results
         query.on('end', function() {
@@ -40,10 +44,10 @@ router.get('/test', function(req, res) {
 
 });
 
-//GET categorias
+//GET skill
 router.get('/', function(req, res) {
     var rows = {};
-    rows['categories'] = [];
+    rows['skills'] = [];
     rows['metadata'] = {};
     var registro = {};
 
@@ -53,18 +57,19 @@ router.get('/', function(req, res) {
         if(err) {
             done();
             console.log(err);
-            return res.status(500).json({success: false, data: err, context: '/categories'});
+            return res.status(500).json({success: false, data: err, context: '/skills'});
         }
 
         var length = 0;
         // SQL Query > Select Data
-        var query = client.query('SELECT * FROM categorias');
+        var query = client.query('SELECT * FROM skills');
         // Stream results back one row at a time
         query.on('row', function(row) {
             registro = {};
             registro['name'] = row.nombre;
             registro['description'] = row.descripcion;
-            rows['categories'].push(registro);
+            registro['category'] = row.categoria;
+            rows['skills'].push(registro);
             length += 1;
         });
 
@@ -78,9 +83,49 @@ router.get('/', function(req, res) {
     });
 });
 
-//DELETE categoria
-router.delete('/:category', function (req, res) {
-    if (req.params.category == undefined ){
+//GET skill By category
+router.get('/categories/:category', function(req, res) {
+    var rows = {};
+    rows['skills'] = [];
+    rows['metadata'] = {};
+    var registro = {};
+    var categoria = req.params.category;
+
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+            done();
+            console.log(err);
+            return res.status(500).json({success: false, data: err, context: '/skills'});
+        }
+
+        var length = 0;
+        // SQL Query > Select Data
+        var query = client.query('SELECT * FROM skills WHERE categoria IN ($1)', [categoria]);
+        // Stream results back one row at a time
+        query.on('row', function(row) {
+            registro = {};
+            registro['name'] = row.nombre;
+            registro['description'] = row.descripcion;
+            registro['category'] = row.categoria;
+            rows['skills'].push(registro);
+            length += 1;
+        });
+
+        // After all data is returned, close connection and return results
+        query.on('end', function() {
+            done();
+            rows['metadata']['count'] = length;
+            rows['metadata']['version'] = "0.1";
+            return res.status(201).json(rows);
+        });
+    });
+});
+
+//DELETE skill
+router.delete('/categories/:category/:skill', function (req, res) {
+    if (req.params.category == undefined || req.params.skill == undefined ){
         return res.status(400).json({code: 0, message: 'Faltan parametros'});
     }
     pg.connect(connectionString, function(err, client, done) {
@@ -91,7 +136,7 @@ router.delete('/:category', function (req, res) {
             return res.status(404).json({success: false, data: err, context: '/test'});
         }
         // SQL Query > DELETE Data
-        var query = client.query("DELETE FROM categorias WHERE nombre IN ($1)", [req.params.category]);
+        var query = client.query("DELETE FROM skills WHERE nombre IN ($1) AND categoria IN ($2)", [req.params.skill, req.params.category]);
 
         // After all data is returned, close connection and return results
         query.on('end', function() {
@@ -101,13 +146,13 @@ router.delete('/:category', function (req, res) {
     });
 });
 
-//INSERT categoria
-router.post('/', function(req, res){
-    if (req.body.category == undefined || req.body.category.name == undefined || req.body.category.description == undefined){
+//INSERT skill
+router.post('/categories/:category', function(req, res){
+    if (req.body.skill == undefined || req.body.skill.name == undefined || req.body.skill.description == undefined){
         return res.status(400).json({code: 0, message: 'Faltan parametros'});
     }
     // Grab data from http request
-    var data = {nombre: req.body.category.name, descripcion: req.body.category.description};
+    var data = {nombre: req.body.skill.name, descripcion: req.body.skill.description, categoria: req.params.category};
 
 
     // Get a Postgres client from the connection pool
@@ -119,30 +164,31 @@ router.post('/', function(req, res){
             return res.status(500).json({success: false, data: err, context: '/categories'});
         }
         // SQL Query > Insert Data
-        var query = client.query('INSERT INTO categorias(nombre, descripcion) values($1, $2)',
-            [data.nombre, data.descripcion]);
+        var query = client.query('INSERT INTO skills(nombre, descripcion, categoria) values($1, $2, $3)',
+            [data.nombre, data.descripcion, data.categoria]);
 
         query.on('error', function(err) {
-            return res.status(500).json({success: false, data: err, context: '/categories'});
+            return res.status(404).json({'code': 0, 'message': 'Categoria Inexistente'});
         });
 
         // After all data is returned, close connection and return results
         query.on('end', function() {
             done();
-            return res.status(201).json(req.body);
+            return res.status(201).json({'skill': {'name': data.nombre, 'description': data.descripcion, 'category': data.categoria}});
         });
     });
 });
 
 
-//Update Category
-router.post('/:category', function(req, res){
-    if (req.body.category == undefined || req.body.category.name == undefined || req.body.category.description == undefined){
+//Update Skill
+router.put('/categories/:category/:skill', function(req, res){
+    if (req.body.skill == undefined || req.body.skill.name == undefined || req.body.skill.description == undefined){
         return res.status(400).json({code: 0, message: 'Faltan parametros'});
     }
     // Grab data from http request
-    var category = req.params.category;
-    var data = {nombre: req.body.category.name, descripcion: req.body.category.description};
+    var oldCategory = req.params.category;
+    var skill = req.params.skill;
+    var data = {nombre: req.body.skill.name, newCategory: req.body.skill.category, descripcion: req.body.skill.description};
 
     // Get a Postgres client from the connection pool
     pg.connect(connectionString, function(err, client, done) {
@@ -150,14 +196,14 @@ router.post('/:category', function(req, res){
         if(err) {
             done();
             console.log(err);
-            return res.status(500).json({success: false, data: err, context: '/categories'});
+            return res.status(500).json({success: false, data: err, context: '/skills'});
         }
         // SQL Query > Insert Data
-        var query = client.query('UPDATE categorias SET nombre=($1), descripcion=($2) WHERE nombre=($3)',
-            [data.nombre, data.descripcion, category]);
+        var query = client.query('UPDATE skills SET categoria=($2),descripcion=($4) WHERE nombre=($1) AND categoria=($3)',
+            [data.nombre, data.newCategory, oldCategory, data.descripcion]);
 
         query.on('error', function(err) {
-            return res.status(500).json({success: false, data: err, context: '/categories'});
+            return res.status(404).json({'code': 0, 'message': 'Categoria Inexistente'});
         });
 
 

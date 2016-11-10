@@ -5,6 +5,7 @@ var path = require("path");
 const pg = require('pg');
 var bodyParser = require('body-parser');
 var categories = require("./js/categories");
+var skills = require("./js/skills");
 
 // Constants
 const PORT = 8080;
@@ -48,6 +49,8 @@ app.get('/', function(req, res) {
 });
 
 app.use('/categories', categories);
+
+app.use('/skills', skills);
 
 app.listen(process.env.PORT || PORT);
 console.log('Running on http://localhost:' + PORT);
