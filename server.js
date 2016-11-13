@@ -6,6 +6,7 @@ const pg = require('pg');
 var bodyParser = require('body-parser');
 var categories = require("./js/categories");
 var skills = require("./js/skills");
+var toobusy = require('toobusy-js');
 
 // Constants
 const PORT = 8080;
@@ -14,6 +15,16 @@ const PORT = 8080;
 const app = express();
 
 pg.defaults.ssl = true;
+
+// middleware which blocks requests when we're too busy
+app.use(function(req, res, next) {
+  if (toobusy()) {
+    res.send(500, "I'm busy right now, sorry.");
+    console.log("I'm busy right now, sorry.");
+  } else {
+    next();
+  }
+});
 
 
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -52,5 +63,12 @@ app.use('/categories', categories);
 
 app.use('/skills', skills);
 
-app.listen(process.env.PORT || PORT);
+var server = app.listen(process.env.PORT || PORT);
 console.log('Running on http://localhost:' + PORT);
+
+process.on('SIGINT', function() {
+  server.close();
+  // calling .shutdown allows your process to exit normally
+  toobusy.shutdown();
+  process.exit();
+});

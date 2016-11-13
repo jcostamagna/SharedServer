@@ -25,7 +25,7 @@ class CategoriaHandler():
 
     def CategoryRequestInsertWithOutParameters(self):
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        return requests.post(constant.URL + '/categories', headers=headers)
+        return requests.post(constant.URL + '/categories', data=json.dumps({}), headers=headers)
 
     def CategoryInsertSimpleExpectedError(self, name, description):
         response, payload = self.CategoryRequestInsert(name, description)
@@ -242,17 +242,10 @@ class TestCategoria(unittest.TestCase, CategoriaHandler):
         self.checkEmptyBDCategory()
 
         # Agrego categoria sin parametros
-        self.CategoryInsertNoParametersExpectedError()
+        #self.CategoryInsertNoParametersExpectedError()
 
         self.checkEmptyBDCategory()
 
-    def testUpdateCategoryNotExist(self):
-        self.checkEmptyBDCategory()
-
-        # Actualizo categoria Inexistente
-        # self.updateCategoryExpectedError('sport', 'outdoor activies', 'all kind of outdoor activities')
-
-        self.checkEmptyBDCategory()
 
 
 

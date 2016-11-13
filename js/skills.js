@@ -16,9 +16,6 @@ client.connect();
 var query = client.query(
     'CREATE TABLE IF NOT EXISTS skills(nombre VARCHAR(40), descripcion VARCHAR(140),' +
     ' categoria VARCHAR(40) REFERENCES categorias(nombre), PRIMARY KEY (nombre, categoria))');
-query.on('error', function(err) {
-    console.log(err);
-});
 query.on('end', () => { client.end(); });
 
 
@@ -137,6 +134,10 @@ router.delete('/categories/:category/:skill', function (req, res) {
         }
         // SQL Query > DELETE Data
         var query = client.query("DELETE FROM skills WHERE nombre IN ($1) AND categoria IN ($2)", [req.params.skill, req.params.category]);
+
+        query.on('error', function(err) {
+            return res.status(404).json({'code': 0, 'message': 'Categoria Inexistente'});
+        });
 
         // After all data is returned, close connection and return results
         query.on('end', function() {

@@ -6,10 +6,10 @@ import __init__ as constant
 from categoriaTest import CategoriaHandler
 
 
-class TestSkill(unittest.TestCase, CategoriaHandler):
+class SkillHandler():
 
     # @responses.activate
-    def setUp(self):
+    def setUpSkillHandler(self):
         response = requests.get(constant.URL + '/skills/test')
         self.assertEqual(json.dumps([]), response.text)
         self.assertEqual(201, response.status_code)
@@ -28,19 +28,10 @@ class TestSkill(unittest.TestCase, CategoriaHandler):
         self.assertEqual(json.dumps(payload), json.dumps(json.loads(response.text)))
         self.assertEqual(201, response.status_code)
 
-    def CategoryRequestInsert(self, name, description):
-        payload = {'category': {'name': name, 'description': description}}
-        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        return requests.post(constant.URL + '/categories', data=json.dumps(payload), headers=headers), payload
-
-    def CategoryInsertSimple(self, name, description):
-        response, payload = self.CategoryRequestInsert(name, description)
-        self.assertEqual(json.dumps(payload), json.dumps(json.loads(response.text)))
-        self.assertEqual(201, response.status_code)
 
     def SkillRequestInsertWithOutParameters(self, category):
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        return requests.post(constant.URL + 'skills/categories' + category, headers=headers)
+        return requests.post(constant.URL + '/skills/categories/' + category, data=json.dumps({}), headers=headers)
 
     def SkillInsertSimpleExpectedError(self, name, description, category):
         response = self.SkillRequestInsert(name, description, category)
@@ -48,14 +39,27 @@ class TestSkill(unittest.TestCase, CategoriaHandler):
         self.assertEqual(json.dumps(payload), json.dumps(json.loads(response.text)))
         self.assertEqual(404, response.status_code)
 
-    def SkillInsertNoParametersExpectedError(self):
+    def SkillInsertNoParametersExpectedError(self, category):
         payload = {'code': 0, 'message': 'Faltan parametros'}
-        response = self.SkillRequestInsertWithOutParameters()
+        response = self.SkillRequestInsertWithOutParameters(category)
         self.assertEqual(json.dumps(payload), json.dumps(json.loads(response.text)))
         self.assertEqual(400, response.status_code)
 
+    def SkillRequestUpdateWithOutParameters(self, oldCategory, name):
+        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        return requests.put(constant.URL + '/skills/categories/' + oldCategory + '/' + name, headers=headers)
+
+    def SkillUpdateNoParametersExpectedError(self, oldCategory, name):
+        payload = {'code': 0, 'message': 'Faltan parametros'}
+        response = self.SkillRequestUpdateWithOutParameters(oldCategory, name)
+        self.assertEqual(json.dumps(payload), json.dumps(json.loads(response.text)))
+        self.assertEqual(400, response.status_code)
+
+    def SkillRequestDelete(self, name, category):
+        return requests.delete(constant.URL + '/skills/categories/' + category + '/' + name)
+
     def SkillDeleteSimple(self, name, category):
-        response = requests.delete(constant.URL + '/skills/categories/' + category + '/' + name)
+        response = self.SkillRequestDelete(name, category)
         self.assertEqual(204, response.status_code)
 
     def getSkills(self):
@@ -88,6 +92,19 @@ class TestSkill(unittest.TestCase, CategoriaHandler):
         self.assertEqual(json.dumps({'code': 0, 'message': 'No existe el recurso solicitado'}),
                          json.dumps(json.loads(response.text)))
         self.assertEqual(404, response.status_code)
+
+    def SkillDeleteExpectedError(self, name, category):
+        response = self.SkillRequestDelete(name, category)
+        self.assertEqual(404, response.status_code)
+
+
+
+class TestSkill(unittest.TestCase, CategoriaHandler, SkillHandler):
+
+    # @responses.activate
+    def setUp(self):
+        self.setUpSkillHandler()
+
 
     def testSkillInsertAndDelete(self):
         self.checkEmptyBDCategory()
@@ -150,6 +167,7 @@ class TestSkill(unittest.TestCase, CategoriaHandler):
         #Agregar Skill 1
         self.SkillInsertSimple('c', 'Programador en c', 'software')
 
+        #Chequeo Skills
         response = self.getSkills()
         espected = {"skills": [{"name": 'c', "description": 'Programador en c', "category": 'software'}],
                     "metadata": {"version": "0.1", "count": 1}}
@@ -158,6 +176,7 @@ class TestSkill(unittest.TestCase, CategoriaHandler):
         #Agregar Skill 2
         self.SkillInsertSimple('Aministrador', 'Administrador de empresas', 'administration')
 
+        # Chequeo Skills
         response = self.getSkillsByCategory('administration')
         espected = {"skills": [{"name": 'Aministrador', "description": 'Administrador de empresas', "category": 'administration'}],
                     "metadata": {"version": "0.1", "count": 1}}
@@ -219,6 +238,8 @@ class TestSkill(unittest.TestCase, CategoriaHandler):
         # Agregar Skill 1
         self.SkillInsertSimpleExpectedError('c', 'Programador en c', 'software')
 
+        self.checkEmptyBDSkill()
+
     def testUpdateSkill(self):
         self.checkEmptyBDCategory()
         self.checkEmptyBDSkill()
@@ -266,83 +287,137 @@ class TestSkill(unittest.TestCase, CategoriaHandler):
         # Agregar categoria 1
         self.CategoryInsertSimple('software', 'software activities')
 
-        # Chequeo de categorias
-        response = self.getCategories()
-        espected = {"categories": [{"name": 'software', "description": 'software activities'}],
-                    "metadata": {"version": "0.1", "count": 1}}
-        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
         # Agregar categoria 2
         self.CategoryInsertSimple('administration', 'administration activities')
 
-        # Chequeo de categorias
-        response = self.getCategories()
-        espected = {"categories": [{"name": 'software', "description": 'software activities'},
-                                   {"name": 'administration', "description": 'administration activities'}],
-                    "metadata": {"version": "0.1", "count": 2}}
-        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
         # Agregar categoria 3
         self.CategoryInsertSimple('music', 'all kind of music')
 
-        # Chequeo de categorias
-        response = self.getCategories()
-        espected = {"categories": [{"name": 'software', "description": 'software activities'},
-                                   {"name": 'administration', "description": 'administration activities'},
-                                   {"name": 'music', "description": 'all kind of music'}],
-                    "metadata": {"version": "0.1", "count": 3}}
-        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
+        #Agregar Skill 1
+        self.SkillInsertSimple('c', 'Programador en c', 'software')
 
-        # Eliminamos categoria 2
-        self.CategoryDeleteSimple('administration')
-
-        # Chequeo de categorias
-        response = self.getCategories()
-        espected = {"categories": [{"name": 'software', "description": 'software activities'},
-                                   {"name": 'music', "description": 'all kind of music'}],
-                    "metadata": {"version": "0.1", "count": 2}}
-        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
-
-        # Actualizar categoria 3
-        self.updateCategory('music', 'classic music', 'only classic music')
-
-        # Chequeo de categorias
-        response = self.getCategories()
-        espected = {"categories": [{"name": 'software', "description": 'software activities'},
-                                   {"name": 'classic music', "description": 'only classic music'}],
-                    "metadata": {"version": "0.1", "count": 2}}
-        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
-
-        # Eliminamos categoria 1
-        self.CategoryDeleteSimple('software')
-
-        # Chequeo de categorias
-        response = self.getCategories()
-        espected = {"categories": [{"name": 'classic music', "description": 'only classic music'}],
+        #Chequeo Skills
+        response = self.getSkills()
+        espected = {"skills": [{"name": 'c', "description": 'Programador en c', "category": 'software'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        # Eliminamos categoria 3
-        self.CategoryDeleteSimple('classic music')
+        #Agregar Skill 2
+        self.SkillInsertSimple('Aministrador', 'Administrador de empresas', 'administration')
 
+        # Chequeo Skills
+        response = self.getSkillsByCategory('administration')
+        espected = {"skills": [{"name": 'Aministrador', "description": 'Administrador de empresas', "category": 'administration'}],
+                    "metadata": {"version": "0.1", "count": 1}}
+        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
+
+        #Agregar Skill 3
+        self.SkillInsertSimple('java', 'Programador en java', 'software')
+
+        #Chequeo Skills
+        response = self.getSkillsByCategory('software')
+        espected = {"skills": [{"name": 'c', "description": 'Programador en c', "category": 'software'},
+                               {"name": 'java', "description": 'Programador en java', "category": 'software'}],
+                    "metadata": {"version": "0.1", "count": 2}}
+        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
+
+        #Actualizar Skill
+        self.updateSkill('Aministrador', 'Administrador de juegos de soft', 'administration', 'software')
+
+        #Chequeo Skills
+        response = self.getSkillsByCategory('software')
+        espected = {"skills": [{"name": 'c', "description": 'Programador en c', "category": 'software'},
+                               {"name": 'java', "description": 'Programador en java', "category": 'software'},
+                               {"name": 'Aministrador', "description": 'Administrador de juegos de soft', "category": 'software'}],
+                    "metadata": {"version": "0.1", "count": 3}}
+        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
+        response = self.getSkills()
+        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
+
+        #Delete Skill 3
+        self.SkillDeleteSimple('Aministrador','software')
+
+        #Chequeo Skills
+        response = self.getSkillsByCategory('software')
+        espected = {"skills": [{"name": 'c', "description": 'Programador en c', "category": 'software'},
+                               {"name": 'java', "description": 'Programador en java', "category": 'software'}],
+                    "metadata": {"version": "0.1", "count": 2}}
+        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
+        response = self.getSkills()
+        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
+
+        #Delete Skill 1
+        self.SkillDeleteSimple('c', 'software')
+
+        #Chequeo Skills
+        response = self.getSkillsByCategory('software')
+        espected = {"skills": [{"name": 'java', "description": 'Programador en java', "category": 'software'}],
+                    "metadata": {"version": "0.1", "count": 1}}
+        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
+        response = self.getSkills()
+        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
+
+        # Delete Skill 2
+        self.SkillDeleteSimple('java', 'software')
+
+        # Chequeo Skills
+        response = self.getSkillsByCategory('software')
+        espected = {"skills": [],
+                    "metadata": {"version": "0.1", "count": 0}}
+        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
+        response = self.getSkills()
+        self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
+
+        #Elimino Categorias
+        self.setUpHandler()
+
+        self.checkEmptyBDSkill()
         self.checkEmptyBDCategory()
 
     def testInsertWithOutParametersExpectedError(self):
         self.checkEmptyBDCategory()
 
-        # Agrego categoria sin parametros
-        self.CategoryInsertNoParametersExpectedError()
+        # Agregar categoria 1
+        self.CategoryInsertSimple('software', 'software activities')
+
+        # Agrego skill sin parametros
+        self.SkillInsertNoParametersExpectedError('software')
+
+        #Agrego Skill
+        self.SkillInsertSimple('c', 'Programador en c', 'software')
+
+        #Update de skill sin parametros
+        self.SkillUpdateNoParametersExpectedError('software', 'c')
+
+        #Clean
+        self.setUp()
+        self.setUpHandler()
 
         self.checkEmptyBDCategory()
 
-    def testUpdateSkillNotExist(self):
+'''
+Preguntar sobre esta prueba
+    def testDeleteSkillError(self):
         self.checkEmptyBDCategory()
 
-        # Actualizo categoria Inexistente
-        # self.updateCategoryExpectedError('sport', 'outdoor activies', 'all kind of outdoor activities')
+        # Agregar categoria 1
+        self.CategoryInsertSimple('software', 'software activities')
+
+        # Agrego Skill
+        self.SkillInsertSimple('c', 'Programador en c', 'software')
+
+        #Delete Skill con categoria inexistente
+        self.SkillDeleteExpectedError('c', 'administration')
+
+        # Clean
+        self.setUp()
+        self.setUpHandler()
 
         self.checkEmptyBDCategory()
 
+'''
 
 
 
