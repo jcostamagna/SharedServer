@@ -1,42 +1,26 @@
 var app = angular.module('App', ['ngMaterial', 'ngMdIcons', 'md.data.table', 'ngRoute', 'ngAnimate']);
 
 app.controller('AppController', ['$scope','$mdSidenav','$mdDialog','$http', function($scope,$mdSidenav, $mdDialog,$http) {
-  $scope.formData = {};
-  $scope.todoData = {};
-  // Get all todos
-  $http.get('/categories')
-  .success((data) => {
-    $scope.todoData = data;
-    console.log(data);
-  })
-  .error((error) => {
-    console.log('Error: ' + error);
-  });
-  // Create a new todo
-  $scope.createJP = () => {
-    $http.post('/job_positions', $scope.formData)
-    .success((data) => {
-      $scope.formData = {};
-      $scope.todoData = data;
-      console.log(data);
-    })
-    .error((error) => {
-      console.log('Error: ' + error);
-    });
-  };
-  // Delete a todo
-  $scope.deleteTodo = (todoID) => {
-    $http.delete('/job_positions/' + todoID)
-    .success((data) => {
-      $scope.todoData = data;
-      console.log(data);
-    })
-    .error((data) => {
-      console.log('Error: ' + data);
-    });
-  };
+  $scope.categories = {};
 
 
+  var Indata = {"category":{"name": "sport", "description": "sport activities"}};
+  $http.post("/categories", Indata).
+        then(function (data, status, headers, config) { alert("success") },
+             function (data, status, headers, config) { alert("error") });
+
+
+
+
+  $scope.getCategories = function () {
+      $http.get('/categories')
+      .success((data) => {
+        $scope.categories = data.categories;
+      })
+      .error((error) => {
+        console.log('Error: ' + error);
+      });
+  };
 
 
   /**
