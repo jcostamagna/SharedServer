@@ -67,7 +67,7 @@
                         CATEGORIAS
               </md-button>
               <div ng-show="slideToggle_Cat" ng-click="toggleList()" layout="column">
-                <md-button class="md-raised md-secondary slide-toggle" href="#/listado-categories">
+                <md-button class="md-raised md-secondary slide-toggle" ng-click="get('/categories')" href="#/listado-categories">
                         Listado
                 </md-button>
               </div>

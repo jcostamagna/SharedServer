@@ -1,104 +1,9 @@
 var app = angular.module('App', ['ngMaterial', 'ngMdIcons', 'md.data.table', 'ngRoute', 'ngAnimate']);
 
-app.controller('AppController', ['$scope','$mdSidenav','$mdDialog','$http', function($scope,$mdSidenav, $mdDialog,$http) {
-  $scope.categories = {};
+app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDialog','$http', function($mdEditDialog,$scope,$mdSidenav,$mdDialog,$http) {
 
-
-  var Indata = {"category":{"name": "sport", "description": "sport activities"}};
-  $http.post("/categories", Indata).
-        then(function (data, status, headers, config) { alert("success") },
-             function (data, status, headers, config) { alert("error") });
-
-
-
-
-  $scope.getCategories = function () {
-      $http.get('/categories')
-      .success((data) => {
-        $scope.categories = data.categories;
-      })
-      .error((error) => {
-        console.log('Error: ' + error);
-      });
-  };
-
-
-  /**
-   * Hide or Show the 'left' sideNav area
-   */
-  $scope.toggleList = function toggleList() {
-    $mdSidenav('left').toggle();
-  }
-
-  $scope.showAdd = function(ev) {
-    $mdDialog.show({
-      controller: DialogController,
-      template: '<md-dialog aria-label="AddObject" ng-controller="nutritionController"> <md-content class="md-padding"> <form name="userForm"> <div layout="column" flex> <md-input-container flex><input ng-model="user.firstName" placeholder="Nombre"> </md-input-container> </div>                       <md-select aria-label="Categoria" ng-model="dessert.type" placeholder=""> <md-option ng-value="type" ng-repeat="type in getTypes()" style="background-color:rgb(190,190,220);">{{type}}</md-option></md-select>                       <md-input-container flex> <label>Descripcion</label> <textarea ng-model="user.biography" columns="1" md-maxlength="50"></textarea> </md-input-container> </form> </md-content> <div class="md-dialog-actions" layout="row"> <span flex></span> <md-button ng-click="answer(\'useful\')" class="md-primary"> Save </md-button> <md-button ng-click="answer(\'not useful\')"> Cancel </md-button> </div></md-dialog>',
-      targetEvent: ev,
-    })
-    .then(function(answer) {
-      $scope.alert = 'You said the information was "' + answer + '".';
-    }, function() {
-      $scope.alert = 'You cancelled the dialog.';
-    });
-  };
-
-}]);
-
-function DialogController($scope, $mdDialog) {
-  $scope.hide = function() {
-    $mdDialog.hide();
-  };
-  $scope.cancel = function() {
-    $mdDialog.cancel();
-  };
-  $scope.answer = function(answer) {
-    $mdDialog.hide(answer);
-  };
-};
-
-app.config(function($routeProvider){
-  //configuración y definición de las rutas
-$routeProvider
-            .when("/", {
-                controller: "AppController",
-                templateUrl: "vistas/home.html"
-            })
-            .when("/listado-job-positions", {
-                controller: "AppController",
-                templateUrl: "vistas/listadoJobPos.html"
-            })
-            .when("/listado-job-categories", {
-                controller: "AppController",
-                templateUrl: "vistas/CategoriasJobPos.html"
-            })
-            .when("/listado-skills", {
-                controller: "AppController",
-                templateUrl: "vistas/listadoSkills.html"
-            })
-            .when("/listado-skills-categories", {
-                controller: "AppController",
-                templateUrl: "vistas/CategoriasSkills.html"
-            })
-            .when("/listado-categories", {
-                controller: "AppController",
-                templateUrl: "vistas/Categorias.html"
-            });
-})
-
-.config(['$mdThemingProvider', function ($mdThemingProvider) {
-    'use strict';
-    
- //   $mdThemingProvider.theme('default')
- //S     .primaryPalette('blue');
-}])
-
-.controller('nutritionController', ['$mdEditDialog', '$q', '$scope', '$timeout', function ($mdEditDialog, $q, $scope, $timeout) {
-  'use strict';
-  
   $scope.selected = [];
   $scope.limitOptions = [5, 10, 15];
-  
 
   $scope.options = {
     rowSelection: true,
@@ -111,69 +16,51 @@ $routeProvider
     pageSelect: true
   };
 
-    $scope.query = {
+  $scope.query = {
     order: 'name',
     limit: 10,
     page: 1
   };
-  
-  $scope.desserts = {
-    "count": 9,
-    "data": [
-      {
-        "name": "Programador JAVA",
-        "type": "Programador Junior"
-      }, {
-        "name": "Programador PHP",
-        "type": "Programador Junior"
-      }, {
-        "name": "Project Manager",
-        "type": "Software"
-      }, {
-        "name": "CEO",
-        "type": "Directivo"
-      }, {
-        "name": "Programador MOBILE",
-        "type": "Programador Junior"
-      }, {
-        "name": "Programador JAVA",
-        "type": "Programador Senior"
-      }, {
-        "name": "Programador C++",
-        "type": "Programador Senior"
-      }, {
-        "name": "Director",
-        "type": "Directivo"
-      }, {
-        "name": "Analista Funcional",
-        "type": "Software"
-      }
-    ]
+
+  $scope.putCategory = function (name,description) {
+    console.log("putCategorias");
+    var data = {category:{
+                            name: name,
+                            description: description
+                            }
+                };
+    $http.post("/categories", JSON.stringify(data)).
+        then(function (data, status, headers, config) { alert("success") },
+             function (data, status, headers, config) { alert("error") });  
+  }
+
+  $scope.get = function (url) {
+      $http.get(url)
+      .success((data) => {
+        $scope.items = data;
+      })
+      .error((error) => {
+        console.log('Error: ' + error);
+      });
   };
-  
-  $scope.editComment = function (event, dessert) {
+
+
+  $scope.editComment = function (event, item) {
     event.stopPropagation(); // in case autoselect is enabled
     
     var editDialog = {
-      modelValue: dessert.comment,
-      placeholder: 'Add a comment',
+      modelValue: item.description,
+      placeholder: 'Agregar descripcion',
       save: function (input) {
-        if(input.$modelValue === 'Donald Trump') {
-          input.$invalid = true;
-          return $q.reject();
-        }
-        if(input.$modelValue === 'Bernie Sanders') {
-          return dessert.comment = 'FEEL THE BERN!'
-        }
-        dessert.comment = input.$modelValue;
+        item.description = input.$modelValue;
       },
       targetEvent: event,
-      title: 'Add a comment',
+      title: 'Agregar descripcion',
       validators: {
         'md-maxlength': 50
       }
     };
-    
+  
     var promise;
     
     if($scope.options.largeEditDialog) {
@@ -190,14 +77,12 @@ $routeProvider
       });
     });
   };
-  
+
+
   $scope.toggleLimitOptions = function () {
     $scope.limitOptions = $scope.limitOptions ? undefined : [5, 10, 15];
   };
   
-  $scope.getTypes = function () {
-    return ['Programador Junior', 'Programador Senior', 'Software', 'CEO', 'Directivo'];
-  };
   
   $scope.loadStuff = function () {
     $scope.promise = $timeout(function () {
@@ -206,7 +91,7 @@ $routeProvider
   }
   
   $scope.logItem = function (item) {
-    console.log(item.name, 'was selected');
+    console.log(item.name, 'seleccionado');
   };
   
   $scope.logOrder = function (order) {
@@ -217,6 +102,40 @@ $routeProvider
     console.log('page: ', page);
     console.log('limit: ', limit);
   }
+
+  /**
+   * Hide or Show the 'left' sideNav area
+   */
+  $scope.toggleList = function toggleList() {
+    $mdSidenav('left').toggle();
+  }
+
+  $scope.showAdd = function(ev) {
+    $mdDialog.show({
+      controller: DialogController,
+      template: '<md-dialog aria-label="AddObject" ng-controller="AppController"> <md-content class="md-padding"> <form name="userForm"> <div layout="column" flex> <md-input-container flex><input ng-model="user.firstName" placeholder="Nombre"> </md-input-container> </div>                       <md-select aria-label="Categoria" ng-model="dessert.type" placeholder=""> <md-option ng-value="type" ng-repeat="type in getTypes()" style="background-color:rgb(190,190,220);">{{type}}</md-option></md-select>                       <md-input-container flex> <label>Descripcion</label> <textarea ng-model="user.biography" columns="1" md-maxlength="50"></textarea> </md-input-container> </form> </md-content> <div class="md-dialog-actions" layout="row"> <span flex></span> <md-button ng-click="answer(\'useful\')" class="md-primary"> Save </md-button> <md-button ng-click="answer(\'not useful\')"> Cancel </md-button> </div></md-dialog>',
+      targetEvent: ev,
+    })
+    .then(function(answer) {
+      $scope.alert = 'You said the information was "' + answer + '".';
+    }, function() {
+      $scope.alert = 'You cancelled the dialog.';
+    });
+  };
+
+
+  function DialogController($scope, $mdDialog) {
+    $scope.hide = function() {
+      $mdDialog.hide();
+    };
+    $scope.cancel = function() {
+      $mdDialog.cancel();
+    };
+    $scope.answer = function(answer) {
+      $mdDialog.hide(answer);
+    };
+  };
+
 }]);
 
 app.animation('.slide-toggle', ['$animateCss', function($animateCss) {
@@ -250,3 +169,32 @@ app.animation('.slide-toggle', ['$animateCss', function($animateCss) {
         }
     };
 }]);
+
+app.config(function($routeProvider){
+  //configuración y definición de las rutas
+$routeProvider
+            .when("/", {
+                controller: "AppController",
+                templateUrl: "vistas/home.html"
+            })
+            .when("/listado-job-positions", {
+                controller: "AppController",
+                templateUrl: "vistas/listadoJobPos.html"
+            })
+            .when("/listado-job-categories", {
+                controller: "AppController",
+                templateUrl: "vistas/CategoriasJobPos.html"
+            })
+            .when("/listado-skills", {
+                controller: "AppController",
+                templateUrl: "vistas/listadoSkills.html"
+            })
+            .when("/listado-skills-categories", {
+                controller: "AppController",
+                templateUrl: "vistas/CategoriasSkills.html"
+            })
+            .when("/listado-categories", {
+                controller: "AppController",
+                templateUrl: "vistas/Categorias.html"
+            });
+});
