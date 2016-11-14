@@ -1,6 +1,6 @@
 var app = angular.module('App', ['ngMaterial', 'ngMdIcons', 'md.data.table', 'ngRoute', 'ngAnimate']);
 
-app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDialog','$http', function($mdEditDialog,$scope,$mdSidenav,$mdDialog,$http) {
+app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDialog','$http', '$timeout', function($mdEditDialog,$scope,$mdSidenav,$mdDialog,$http,$timeout) {
 
   $scope.selected = [];
   $scope.limitOptions = [5, 10, 15];
@@ -84,10 +84,11 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
   };
   
   
-  $scope.loadStuff = function () {
+  $scope.loadStuff = function (url) {
+    $scope.url = url;
     $scope.promise = $timeout(function () {
-      // loading
-    }, 2000);
+       $scope.get($scope.url);
+    }, 6000);
   }
   
   $scope.logItem = function (item) {
