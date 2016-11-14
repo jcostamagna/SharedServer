@@ -112,31 +112,79 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
   }
 
   $scope.showAdd = function(ev) {
+    $scope.get('/categories');
     $mdDialog.show({
-      controller: DialogController,
-      template: '<md-dialog aria-label="AddObject" ng-controller="AppController"> <md-content class="md-padding"> <form name="userForm"> <div layout="column" flex> <md-input-container flex><input ng-model="user.firstName" placeholder="Nombre"> </md-input-container> </div>                       <md-select aria-label="Categoria" ng-model="dessert.type" placeholder=""> <md-option ng-value="type" ng-repeat="type in getTypes()" style="background-color:rgb(190,190,220);">{{type}}</md-option></md-select>                       <md-input-container flex> <label>Descripcion</label> <textarea ng-model="user.biography" columns="1" md-maxlength="50"></textarea> </md-input-container> </form> </md-content> <div class="md-dialog-actions" layout="row"> <span flex></span> <md-button ng-click="answer(\'useful\')" class="md-primary"> Save </md-button> <md-button ng-click="answer(\'not useful\')"> Cancel </md-button> </div></md-dialog>',
       targetEvent: ev,
+      template: '<md-dialog aria-label="AddObject" ng-controller="AppController">'+
+                '     <md-content class="md-padding">'+
+                '       <form name="userForm">'+
+                '          <div layout="column" flex>'+
+                '             <md-input-container flex>'+
+                '               <input ng-model="user.firstName" placeholder="Nombre"> '+
+                '             </md-input-container> '+
+                '          </div>'+
+                ''+
+                '          <md-select aria-label="Categoria" ng-model="category.name" placeholder="">'+
+                '              <md-option ng-value=category.name ng-repeat="category in categories" style="background-color:rgb(190,190,220);">'+
+                '                   {{category.name}}'+
+                '               </md-option>'+
+                '          </md-select>'+
+                ''+
+                '          <md-input-container flex>'+
+                '             <label>Descripcion</label> '+
+                '             <textarea ng-model="user.description" columns="1" md-maxlength="50">'+
+                '             </textarea> '+
+                '           </md-input-container>'+
+                '        </form>'+
+                '     </md-content>'+
+                ' <div class="md-dialog-actions" layout="row">'+
+                '   <span flex></span>'+
+                '   <md-button ng-click="add(user.firstName,user.description,category.name)" class="md-primary"> Guardar </md-button>'+
+                '   <md-button ng-click="answer(\'not useful\')"> Cancelar </md-button> </div></md-dialog>',
+      locals: {
+        categories: $scope.items.categories
+      },
+      controller: DialogController
     })
     .then(function(answer) {
-      $scope.alert = 'You said the information was "' + answer + '".';
+      console.log('Saved "' + answer + '.');
     }, function() {
-      $scope.alert = 'You cancelled the dialog.';
+      console.log('You cancelled the dialog.');
     });
+
+    function DialogController($scope, $mdDialog, categories, $http) {
+      $scope.categories = categories;
+      
+      $scope.hide = function() {
+        $mdDialog.hide();
+      };
+
+      $scope.cancel = function() {
+        $mdDialog.cancel();
+      };
+
+      $scope.answer = function(answer) {
+        $mdDialog.hide(answer);
+      };
+
+      $scope.add = function(name,description,category) {
+        console.log("Se quiere agregar el name: "+name+", descripcion: "+description+", categoria: "+category);
+        
+        var data = {category:{
+                                name: name,
+                                description: description
+                                }
+                    };
+        $http.post("/categories", JSON.stringify(data)).
+            then(function (data, status, headers, config) { alert("success") },
+                 function (data, status, headers, config) { alert("error") });  
+            
+        $mdDialog.hide("OK");
+      }
+
+    };
+
   };
-
-
-  function DialogController($scope, $mdDialog) {
-    $scope.hide = function() {
-      $mdDialog.hide();
-    };
-    $scope.cancel = function() {
-      $mdDialog.cancel();
-    };
-    $scope.answer = function(answer) {
-      $mdDialog.hide(answer);
-    };
-  };
-
 }]);
 
 app.animation('.slide-toggle', ['$animateCss', function($animateCss) {
