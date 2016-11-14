@@ -22,18 +22,6 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
     page: 1
   };
 
-  $scope.putCategory = function (name,description) {
-    console.log("putCategorias");
-    var data = {category:{
-                            name: name,
-                            description: description
-                            }
-                };
-    $http.post("/categories", JSON.stringify(data)).
-        then(function (data, status, headers, config) { alert("success") },
-             function (data, status, headers, config) { alert("error") });  
-  }
-
   $scope.get = function (url) {
       $http.get(url)
       .success((data) => {
@@ -88,7 +76,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
     $scope.url = url;
     $scope.promise = $timeout(function () {
        $scope.get($scope.url);
-    }, 6000);
+    }, 9000);
   }
   
   $scope.logItem = function (item) {
@@ -111,6 +99,74 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
     $mdSidenav('left').toggle();
   }
 
+  $scope.showAddCategory = function(ev) {
+    $scope.get('/categories');
+    $mdDialog.show({
+      targetEvent: ev,
+      template: '<md-dialog aria-label="AddObject" ng-controller="AppController">'+
+                '     <md-content class="md-padding">'+
+                '       <form name="userForm">'+
+                '          <div layout="column" flex>'+
+                '             <md-input-container flex>'+
+                '               <input ng-model="user.firstName" placeholder="Nombre"> '+
+                '             </md-input-container> '+
+                '          </div>'+
+                ''+
+                ''+
+                '          <md-input-container flex>'+
+                '             <label>Descripcion</label> '+
+                '             <textarea ng-model="user.description" columns="1" md-maxlength="50">'+
+                '             </textarea> '+
+                '           </md-input-container>'+
+                '        </form>'+
+                '     </md-content>'+
+                ' <div class="md-dialog-actions" layout="row">'+
+                '   <span flex></span>'+
+                '   <md-button ng-click="add(user.firstName,user.description)" class="md-primary"> Guardar </md-button>'+
+                '   <md-button ng-click="answer(\'dialogo cancelado\')"> Cancelar </md-button> </div></md-dialog>',
+      controller: DialogController
+    })
+    .then(function(answer) {
+      if (answer == 'OK') {
+        $scope.loadStuff('/categories');
+      }
+      console.log(answer);
+    }, function() {
+    });
+
+    function DialogController($scope, $mdDialog, $http) {
+      
+      $scope.hide = function() {
+        $mdDialog.hide();
+      };
+
+      $scope.cancel = function() {
+        $mdDialog.cancel();
+      };
+
+      $scope.answer = function(answer) {
+        $mdDialog.hide(answer);
+      };
+
+      $scope.add = function(name,description) {
+        var data = {category:{
+                                name: name,
+                                description: description
+                                }
+                    };
+        $http.post("/categories", JSON.stringify(data));
+            
+        $mdDialog.hide("OK");
+      }
+    };
+
+  };
+
+
+
+
+
+/*
   $scope.showAdd = function(ev) {
     $scope.get('/categories');
     $mdDialog.show({
@@ -149,7 +205,6 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
     .then(function(answer) {
       console.log('Saved "' + answer + '.');
     }, function() {
-      console.log('You cancelled the dialog.');
     });
 
     function DialogController($scope, $mdDialog, categories, $http) {
@@ -181,10 +236,10 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
             
         $mdDialog.hide("OK");
       }
-
     };
 
   };
+*/
 }]);
 
 app.animation('.slide-toggle', ['$animateCss', function($animateCss) {
