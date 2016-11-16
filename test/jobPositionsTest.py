@@ -6,111 +6,111 @@ import __init__ as constant
 from categoriaTest import CategoriaHandler
 
 
-class SkillHandler():
+class JobHandler():
 
     # @responses.activate
-    def setUpSkillHandler(self):
-        response = requests.get(constant.URL + '/skills/test')
+    def setUpJobHandler(self):
+        response = requests.get(constant.URL + '/job_positions/test')
         self.assertEqual(json.dumps([]), response.text)
         self.assertEqual(201, response.status_code)
-        self.checkEmptyBDSkill()
+        self.checkEmptyBDJob()
         self.setUpHandler();
 
-    def SkillRequestInsert(self, name, description, category):
-        payload = {'skill': {'name': name, 'description': description}}
+    def JobRequestInsert(self, name, description, category):
+        payload = {'job_position': {'name': name, 'description': description}}
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        return requests.post(constant.URL + '/skills/categories/' + category, data=json.dumps(payload),
+        return requests.post(constant.URL + '/job_positions/categories/' + category, data=json.dumps(payload),
                              headers=headers)
 
-    def SkillInsertSimple(self, name, description, category):
-        response = self.SkillRequestInsert(name, description, category)
-        payload = {'skill': {'name': name, 'description': description, 'category': category}}
+    def JobInsertSimple(self, name, description, category):
+        response = self.JobRequestInsert(name, description, category)
+        payload = {'job_position': {'name': name, 'description': description, 'category': category}}
         self.assertEqual(json.dumps(payload), json.dumps(json.loads(response.text)))
         self.assertEqual(201, response.status_code)
 
 
-    def SkillRequestInsertWithOutParameters(self, category):
+    def JobRequestInsertWithOutParameters(self, category):
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        return requests.post(constant.URL + '/skills/categories/' + category, data=json.dumps({}), headers=headers)
+        return requests.post(constant.URL + '/job_positions/categories/' + category, data=json.dumps({}), headers=headers)
 
-    def SkillInsertSimpleExpectedError(self, name, description, category):
-        response = self.SkillRequestInsert(name, description, category)
+    def JobInsertSimpleExpectedError(self, name, description, category):
+        response = self.JobRequestInsert(name, description, category)
         payload = {'code': 0, 'message': 'Categoria Inexistente'}
         self.assertEqual(json.dumps(payload), json.dumps(json.loads(response.text)))
         self.assertEqual(404, response.status_code)
 
-    def SkillInsertNoParametersExpectedError(self, category):
+    def JobInsertNoParametersExpectedError(self, category):
         payload = {'code': 0, 'message': 'Faltan parametros'}
-        response = self.SkillRequestInsertWithOutParameters(category)
+        response = self.JobRequestInsertWithOutParameters(category)
         self.assertEqual(json.dumps(payload), json.dumps(json.loads(response.text)))
         self.assertEqual(400, response.status_code)
 
-    def SkillRequestUpdateWithOutParameters(self, oldCategory, name):
+    def JobRequestUpdateWithOutParameters(self, oldCategory, name):
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        return requests.put(constant.URL + '/skills/categories/' + oldCategory + '/' + name, headers=headers)
+        return requests.put(constant.URL + '/job_positions/categories/' + oldCategory + '/' + name, headers=headers)
 
-    def SkillUpdateNoParametersExpectedError(self, oldCategory, name):
+    def JobUpdateNoParametersExpectedError(self, oldCategory, name):
         payload = {'code': 0, 'message': 'Faltan parametros'}
-        response = self.SkillRequestUpdateWithOutParameters(oldCategory, name)
+        response = self.JobRequestUpdateWithOutParameters(oldCategory, name)
         self.assertEqual(json.dumps(payload), json.dumps(json.loads(response.text)))
         self.assertEqual(400, response.status_code)
 
-    def SkillRequestDelete(self, name, category):
-        return requests.delete(constant.URL + '/skills/categories/' + category + '/' + name)
+    def JobRequestDelete(self, name, category):
+        return requests.delete(constant.URL + '/job_positions/categories/' + category + '/' + name)
 
-    def SkillDeleteSimple(self, name, category):
-        response = self.SkillRequestDelete(name, category)
+    def JobDeleteSimple(self, name, category):
+        response = self.JobRequestDelete(name, category)
         self.assertEqual(204, response.status_code)
 
-    def getSkills(self):
-        return requests.get(constant.URL + '/skills')
+    def getJobs(self):
+        return requests.get(constant.URL + '/job_positions')
 
-    def getSkillsByCategory(self, category):
-        return requests.get(constant.URL + '/skills/categories/' + category)
+    def getJobsByCategory(self, category):
+        return requests.get(constant.URL + '/job_positions/categories/' + category)
 
-    def checkEmptyBDSkill(self):
+    def checkEmptyBDJob(self):
         # Chequear que este vacio
-        response = self.getSkills()
-        espected = {"skills": [], "metadata": {"version": "0.1", "count": 0}}
+        response = self.getJobs()
+        espected = {"job_positions": [], "metadata": {"version": "0.1", "count": 0}}
 
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
         self.assertEqual(201, response.status_code)
 
-    def SkillRequestUpdate(self, name, description, oldCategory, newCategory):
-        payload = {'skill': {'name': name, 'category': newCategory, 'description': description}}
+    def JobRequestUpdate(self, name, description, oldCategory, newCategory):
+        payload = {'job_position': {'name': name, 'category': newCategory, 'description': description}}
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        return requests.put(constant.URL + '/skills/categories/' + oldCategory + '/' + name, data=json.dumps(payload),
+        return requests.put(constant.URL + '/job_positions/categories/' + oldCategory + '/' + name, data=json.dumps(payload),
                              headers=headers), payload
 
-    def updateSkill(self, name,description, oldCategory, newCategory):
-        response, payload = self.SkillRequestUpdate(name, description, oldCategory, newCategory)
+    def updateJob(self, name,description, oldCategory, newCategory):
+        response, payload = self.JobRequestUpdate(name, description, oldCategory, newCategory)
         self.assertEqual(json.dumps(payload), json.dumps(json.loads(response.text)))
         self.assertEqual(201, response.status_code)
 
-    def updateSkillExpectedError(self, name, description, oldCategory, newCategory):
-        response, payload = self.SkillRequestUpdate(name, description, oldCategory, newCategory)
+    def updateJobExpectedError(self, name, description, oldCategory, newCategory):
+        response, payload = self.JobRequestUpdate(name, description, oldCategory, newCategory)
         self.assertEqual(json.dumps({'code': 0, 'message': 'Categoria Inexistente'}),
                          json.dumps(json.loads(response.text)))
         self.assertEqual(404, response.status_code)
 
-    def SkillDeleteExpectedError(self, name, category):
-        response = self.SkillRequestDelete(name, category)
+    def JobDeleteExpectedError(self, name, category):
+        response = self.JobRequestDelete(name, category)
         self.assertEqual(json.dumps({'code': 0, 'message': 'Categoria Inexistente'}),
                          json.dumps(json.loads(response.text)))
         self.assertEqual(404, response.status_code)
 
 
 
-class TestSkill(unittest.TestCase, CategoriaHandler, SkillHandler):
+class TestJobs(unittest.TestCase, CategoriaHandler, JobHandler):
 
     # @responses.activate
     def setUp(self):
-        self.setUpSkillHandler()
+        self.setUpJobHandler()
 
 
-    def testSkillInsertAndDelete(self):
+    def testJobInsertAndDelete(self):
         self.checkEmptyBDCategory()
-        self.checkEmptyBDSkill()
+        self.checkEmptyBDJob()
 
         # Agregar categoria 1
         self.CategoryInsertSimple('sport', 'sport activities')
@@ -120,32 +120,32 @@ class TestSkill(unittest.TestCase, CategoriaHandler, SkillHandler):
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Agrego Skill
-        self.SkillInsertSimple('Futbol', 'Saber jugar al futbol', 'sport')
+        #Agrego Job
+        self.JobInsertSimple('Futbol', 'Saber jugar al futbol', 'sport')
 
-        response = self.getSkills()
-        espected = {"skills": [{"name": 'Futbol', "description": 'Saber jugar al futbol', "category": 'sport'}],
+        response = self.getJobs()
+        espected = {"job_positions": [{"name": 'Futbol', "description": 'Saber jugar al futbol', "category": 'sport'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        response = self.getSkillsByCategory('sport')
-        espected = {"skills": [{"name": 'Futbol', "description": 'Saber jugar al futbol', "category": 'sport'}],
+        response = self.getJobsByCategory('sport')
+        espected = {"job_positions": [{"name": 'Futbol', "description": 'Saber jugar al futbol', "category": 'sport'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Elimino Skill
-        self.SkillDeleteSimple('Futbol','sport')
+        #Elimino Job
+        self.JobDeleteSimple('Futbol','sport')
 
-        self.checkEmptyBDSkill()
+        self.checkEmptyBDJob()
 
         # Eliminamos categoria 1
         self.CategoryDeleteSimple('sport')
 
         self.checkEmptyBDCategory()
 
-    def testSkillIntertTwoDeleteTwo(self):
+    def testJobIntertTwoDeleteTwo(self):
         self.checkEmptyBDCategory()
-        self.checkEmptyBDSkill()
+        self.checkEmptyBDJob()
 
         # Agregar categoria 1
         self.CategoryInsertSimple('software', 'software activities')
@@ -166,58 +166,58 @@ class TestSkill(unittest.TestCase, CategoriaHandler, SkillHandler):
                     "metadata": {"version": "0.1", "count": 2}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Agregar Skill 1
-        self.SkillInsertSimple('c', 'Programador en c', 'software')
+        #Agregar Job 1
+        self.JobInsertSimple('c', 'Programador en c', 'software')
 
-        #Chequeo Skills
-        response = self.getSkills()
-        espected = {"skills": [{"name": 'c', "description": 'Programador en c', "category": 'software'}],
+        #Chequeo Jobs
+        response = self.getJobs()
+        espected = {"job_positions": [{"name": 'c', "description": 'Programador en c', "category": 'software'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Agregar Skill 2
-        self.SkillInsertSimple('Aministrador', 'Administrador de empresas', 'administration')
+        #Agregar Job 2
+        self.JobInsertSimple('Aministrador', 'Administrador de empresas', 'administration')
 
-        # Chequeo Skills
-        response = self.getSkillsByCategory('administration')
-        espected = {"skills": [{"name": 'Aministrador', "description": 'Administrador de empresas', "category": 'administration'}],
+        # Chequeo Jobs
+        response = self.getJobsByCategory('administration')
+        espected = {"job_positions": [{"name": 'Aministrador', "description": 'Administrador de empresas', "category": 'administration'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Chequeo ambos skills
-        response = self.getSkills()
-        espected = {"skills": [{"name": 'c', "description": 'Programador en c', "category": 'software'},
+        #Chequeo ambos Jobs
+        response = self.getJobs()
+        espected = {"job_positions": [{"name": 'c', "description": 'Programador en c', "category": 'software'},
                                {"name": 'Aministrador', "description": 'Administrador de empresas',"category": 'administration'}],
                     "metadata": {"version": "0.1", "count": 2}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Elimino Skill 1
-        self.SkillDeleteSimple('c','software')
+        #Elimino Job 1
+        self.JobDeleteSimple('c','software')
 
-        #Chequeo Skills
-        response = self.getSkillsByCategory('administration')
-        espected = {"skills": [{"name": 'Aministrador', "description": 'Administrador de empresas', "category": 'administration'}],
+        #Chequeo Jobs
+        response = self.getJobsByCategory('administration')
+        espected = {"job_positions": [{"name": 'Aministrador', "description": 'Administrador de empresas', "category": 'administration'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        response = self.getSkillsByCategory('software')
-        espected = {"skills": [], "metadata": {"version": "0.1", "count": 0}}
+        response = self.getJobsByCategory('software')
+        espected = {"job_positions": [], "metadata": {"version": "0.1", "count": 0}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        response = self.getSkills()
-        espected = {"skills": [{"name": 'Aministrador', "description": 'Administrador de empresas', "category": 'administration'}],
+        response = self.getJobs()
+        espected = {"job_positions": [{"name": 'Aministrador', "description": 'Administrador de empresas', "category": 'administration'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Elimino Skill 2
-        self.SkillDeleteSimple('Aministrador','administration')
+        #Elimino Job 2
+        self.JobDeleteSimple('Aministrador','administration')
 
-        #Chequeo skills
-        response = self.getSkillsByCategory('administration')
-        espected = {"skills": [], "metadata": {"version": "0.1", "count": 0}}
+        #Chequeo Jobs
+        response = self.getJobsByCategory('administration')
+        espected = {"job_positions": [], "metadata": {"version": "0.1", "count": 0}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        self.checkEmptyBDSkill()
+        self.checkEmptyBDJob()
 
         # Eliminamos categoria 2
         self.CategoryDeleteSimple('administration')
@@ -236,17 +236,17 @@ class TestSkill(unittest.TestCase, CategoriaHandler, SkillHandler):
 
     def testNoExistCategoryError(self):
         self.checkEmptyBDCategory()
-        self.checkEmptyBDSkill()
+        self.checkEmptyBDJob()
 
-        # Agregar Skill 1
-        self.SkillInsertSimpleExpectedError('c', 'Programador en c', 'software')
+        # Agregar Job 1
+        self.JobInsertSimpleExpectedError('c', 'Programador en c', 'software')
 
-        self.checkEmptyBDSkill()
+        self.checkEmptyBDJob()
 
 
-    def testUpdateSkill(self):
+    def testUpdateJob(self):
         self.checkEmptyBDCategory()
-        self.checkEmptyBDSkill()
+        self.checkEmptyBDJob()
 
         # Agregar categoria 1
         self.CategoryInsertSimple('sport', 'sport activities')
@@ -254,28 +254,28 @@ class TestSkill(unittest.TestCase, CategoriaHandler, SkillHandler):
         # Agregar categoria 2
         self.CategoryInsertSimple('software', 'software activities')
 
-        #Agrego Skill
-        self.SkillInsertSimple('Futbol', 'Saber jugar al futbol', 'software')
+        #Agrego Job
+        self.JobInsertSimple('Futbol', 'Saber jugar al futbol', 'software')
 
-        # Chequeo de Skills
-        response = self.getSkills()
-        espected = {"skills": [{"name": 'Futbol', "description": 'Saber jugar al futbol', "category": 'software'}],
+        # Chequeo de Jobs
+        response = self.getJobs()
+        espected = {"job_positions": [{"name": 'Futbol', "description": 'Saber jugar al futbol', "category": 'software'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Update Skill
-        self.updateSkill('Futbol','Saber jugar al futbol', 'software', 'sport')
+        #Update Job
+        self.updateJob('Futbol','Saber jugar al futbol', 'software', 'sport')
 
-        #Chequeo de Skills
-        response = self.getSkills()
-        espected = {"skills": [{"name": 'Futbol', "description": 'Saber jugar al futbol', "category": 'sport'}],
+        #Chequeo de Jobs
+        response = self.getJobs()
+        espected = {"job_positions": [{"name": 'Futbol', "description": 'Saber jugar al futbol', "category": 'sport'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Eliminar Skill
-        self.SkillDeleteSimple('Futbol', 'sport')
+        #Eliminar Job
+        self.JobDeleteSimple('Futbol', 'sport')
 
-        self.checkEmptyBDSkill()
+        self.checkEmptyBDJob()
 
         # Eliminar categoria 1
         self.CategoryDeleteSimple('sport')
@@ -300,85 +300,85 @@ class TestSkill(unittest.TestCase, CategoriaHandler, SkillHandler):
         # Agregar categoria 3
         self.CategoryInsertSimple('music', 'all kind of music')
 
-        #Agregar Skill 1
-        self.SkillInsertSimple('c', 'Programador en c', 'software')
+        #Agregar Job 1
+        self.JobInsertSimple('c', 'Programador en c', 'software')
 
-        #Chequeo Skills
-        response = self.getSkills()
-        espected = {"skills": [{"name": 'c', "description": 'Programador en c', "category": 'software'}],
+        #Chequeo Jobs
+        response = self.getJobs()
+        espected = {"job_positions": [{"name": 'c', "description": 'Programador en c', "category": 'software'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Agregar Skill 2
-        self.SkillInsertSimple('Aministrador', 'Administrador de empresas', 'administration')
+        #Agregar Job 2
+        self.JobInsertSimple('Aministrador', 'Administrador de empresas', 'administration')
 
-        # Chequeo Skills
-        response = self.getSkillsByCategory('administration')
-        espected = {"skills": [{"name": 'Aministrador', "description": 'Administrador de empresas', "category": 'administration'}],
+        # Chequeo Jobs
+        response = self.getJobsByCategory('administration')
+        espected = {"job_positions": [{"name": 'Aministrador', "description": 'Administrador de empresas', "category": 'administration'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Agregar Skill 3
-        self.SkillInsertSimple('java', 'Programador en java', 'software')
+        #Agregar Job 3
+        self.JobInsertSimple('java', 'Programador en java', 'software')
 
-        #Chequeo Skills
-        response = self.getSkillsByCategory('software')
-        espected = {"skills": [{"name": 'c', "description": 'Programador en c', "category": 'software'},
+        #Chequeo Jobs
+        response = self.getJobsByCategory('software')
+        espected = {"job_positions": [{"name": 'c', "description": 'Programador en c', "category": 'software'},
                                {"name": 'java', "description": 'Programador en java', "category": 'software'}],
                     "metadata": {"version": "0.1", "count": 2}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Actualizar Skill
-        self.updateSkill('Aministrador', 'Administrador de juegos de soft', 'administration', 'software')
+        #Actualizar Job
+        self.updateJob('Aministrador', 'Administrador de juegos de soft', 'administration', 'software')
 
-        #Chequeo Skills
-        response = self.getSkillsByCategory('software')
-        espected = {"skills": [{"name": 'c', "description": 'Programador en c', "category": 'software'},
+        #Chequeo Jobs
+        response = self.getJobsByCategory('software')
+        espected = {"job_positions": [{"name": 'c', "description": 'Programador en c', "category": 'software'},
                                {"name": 'java', "description": 'Programador en java', "category": 'software'},
                                {"name": 'Aministrador', "description": 'Administrador de juegos de soft', "category": 'software'}],
                     "metadata": {"version": "0.1", "count": 3}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
-        response = self.getSkills()
+        response = self.getJobs()
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Delete Skill 3
-        self.SkillDeleteSimple('Aministrador','software')
+        #Delete Job 3
+        self.JobDeleteSimple('Aministrador','software')
 
-        #Chequeo Skills
-        response = self.getSkillsByCategory('software')
-        espected = {"skills": [{"name": 'c', "description": 'Programador en c', "category": 'software'},
+        #Chequeo Jobs
+        response = self.getJobsByCategory('software')
+        espected = {"job_positions": [{"name": 'c', "description": 'Programador en c', "category": 'software'},
                                {"name": 'java', "description": 'Programador en java', "category": 'software'}],
                     "metadata": {"version": "0.1", "count": 2}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
-        response = self.getSkills()
+        response = self.getJobs()
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        #Delete Skill 1
-        self.SkillDeleteSimple('c', 'software')
+        #Delete Job 1
+        self.JobDeleteSimple('c', 'software')
 
-        #Chequeo Skills
-        response = self.getSkillsByCategory('software')
-        espected = {"skills": [{"name": 'java', "description": 'Programador en java', "category": 'software'}],
+        #Chequeo Jobs
+        response = self.getJobsByCategory('software')
+        espected = {"job_positions": [{"name": 'java', "description": 'Programador en java', "category": 'software'}],
                     "metadata": {"version": "0.1", "count": 1}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
-        response = self.getSkills()
+        response = self.getJobs()
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
-        # Delete Skill 2
-        self.SkillDeleteSimple('java', 'software')
+        # Delete Job 2
+        self.JobDeleteSimple('java', 'software')
 
-        # Chequeo Skills
-        response = self.getSkillsByCategory('software')
-        espected = {"skills": [],
+        # Chequeo Jobs
+        response = self.getJobsByCategory('software')
+        espected = {"job_positions": [],
                     "metadata": {"version": "0.1", "count": 0}}
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
-        response = self.getSkills()
+        response = self.getJobs()
         self.assertEqual(json.dumps(espected), json.dumps(json.loads(response.text)))
 
         #Elimino Categorias
         self.setUpHandler()
 
-        self.checkEmptyBDSkill()
+        self.checkEmptyBDJob()
         self.checkEmptyBDCategory()
 
     def testInsertWithOutParametersExpectedError(self):
@@ -387,14 +387,14 @@ class TestSkill(unittest.TestCase, CategoriaHandler, SkillHandler):
         # Agregar categoria 1
         self.CategoryInsertSimple('software', 'software activities')
 
-        # Agrego skill sin parametros
-        self.SkillInsertNoParametersExpectedError('software')
+        # Agrego Job sin parametros
+        self.JobInsertNoParametersExpectedError('software')
 
-        #Agrego Skill
-        self.SkillInsertSimple('c', 'Programador en c', 'software')
+        #Agrego Job
+        self.JobInsertSimple('c', 'Programador en c', 'software')
 
-        #Update de skill sin parametros
-        self.SkillUpdateNoParametersExpectedError('software', 'c')
+        #Update de Job sin parametros
+        self.JobUpdateNoParametersExpectedError('software', 'c')
 
         #Clean
         self.setUp()
@@ -402,20 +402,20 @@ class TestSkill(unittest.TestCase, CategoriaHandler, SkillHandler):
 
         self.checkEmptyBDCategory()
 
-    def testDeleteSkillError(self):
+    def testDeleteJobError(self):
         self.checkEmptyBDCategory()
 
         # Agregar categoria 1
         self.CategoryInsertSimple('software', 'software activities')
 
-        # Agrego Skill
-        self.SkillInsertSimple('c', 'Programador en c', 'software')
+        # Agrego Job
+        self.JobInsertSimple('c', 'Programador en c', 'software')
 
-        # Agrego Skill
-        self.SkillInsertSimple('Java', 'Programador en Java', 'software')
+        # Agrego Job
+        self.JobInsertSimple('Java', 'Programador en Java', 'software')
 
-        #Delete Skill con categoria inexistente
-        self.SkillDeleteExpectedError('c', 'administration')
+        #Delete Job con categoria inexistente
+        self.JobDeleteExpectedError('c', 'administration')
 
         # Clean
         self.setUp()
@@ -424,17 +424,17 @@ class TestSkill(unittest.TestCase, CategoriaHandler, SkillHandler):
         self.checkEmptyBDCategory()
 
 
-    def testUpdateSkillError(self):
+    def testUpdateJobError(self):
         self.checkEmptyBDCategory()
 
         # Agregar categoria 1
         self.CategoryInsertSimple('software', 'software activities')
 
-        # Agrego Skill
-        self.SkillInsertSimple('c', 'Programador en c', 'software')
+        # Agrego Job
+        self.JobInsertSimple('c', 'Programador en c', 'software')
 
-        # Delete Skill con categoria inexistente
-        self.updateSkillExpectedError('c', 'Programador en c', 'software', 'administration')
+        # Delete Job con categoria inexistente
+        self.updateJobExpectedError('c', 'Programador en c', 'software', 'administration')
 
         # Clean
         self.setUp()

@@ -9,13 +9,17 @@ const pg = require('pg');
 pg.defaults.ssl = true;
 //~ var connectionString = process.env.DATABASE_URL || 'postgres://koicdmjsauxtuc:2juyGj1IcOMLPrbK_vhaBj0v5V@ec2-54-221-225-242.compute-1.amazonaws.com:5432/debpfqvr21od6g';
 var connectionString = process.env.DATABASE_URL || 'postgres://juan:12Oct1993@localhost:5432/sharedServer?sslmode=require';
-//~ var connectionString = process.env.DATABASE_URL || 'postgres://uvwiyhoazhndqk:28c0drCwyXJILkCJMxjHz38LDq@ec2-23-23-225-98.compute-1.amazonaws.com:5432/dfp1uurfqcikj2';
+//var connectionString = process.env.DATABASE_URL || 'postgres://uvwiyhoazhndqk:28c0drCwyXJILkCJMxjHz38LDq@ec2-23-23-225-98.compute-1.amazonaws.com:5432/dfp1uurfqcikj2';
 var client = new pg.Client(connectionString);
 client.connect();
 
 var query = client.query(
+    'DROP TABLE IF EXISTS skills');
+query.on('end', () => { client.end(); });
+
+query = client.query(
     'CREATE TABLE IF NOT EXISTS skills(nombre VARCHAR(40), descripcion VARCHAR(140),' +
-    ' categoria VARCHAR(40) REFERENCES categorias(nombre), PRIMARY KEY (nombre, categoria))');
+    ' categoria VARCHAR(40) REFERENCES categorias(nombre) on DELETE CASCADE, PRIMARY KEY (nombre, categoria))');
 query.on('end', () => { client.end(); });
 
 
@@ -26,7 +30,7 @@ router.get('/test', function(req, res) {
         if(err) {
             done();
             console.log(err);
-            return res.status(404).json({success: false, data: err, context: '/test'});
+            return res.status(404).json({code: 0, message: err});
         }
 
         // SQL Query > DELETE Data
@@ -54,7 +58,7 @@ router.get('/', function(req, res) {
         if(err) {
             done();
             console.log(err);
-            return res.status(500).json({success: false, data: err, context: '/skills'});
+            return res.status(500).json({code: 0, message: err});
         }
 
         var length = 0;
@@ -94,7 +98,7 @@ router.get('/categories/:category', function(req, res) {
         if(err) {
             done();
             console.log(err);
-            return res.status(500).json({success: false, data: err, context: '/skills'});
+            return res.status(500).json({code: 0, message: err});
         }
 
         var length = 0;
@@ -130,18 +134,22 @@ router.delete('/categories/:category/:skill', function (req, res) {
         if(err) {
             done();
             console.log(err);
-            return res.status(404).json({success: false, data: err, context: '/test'});
+            return res.status(404).json({success: false, data: err, context: '/delete'});
         }
+        var rowsAffected;
         // SQL Query > DELETE Data
-        var query = client.query("DELETE FROM skills WHERE nombre IN ($1) AND categoria IN ($2)", [req.params.skill, req.params.category]);
-
-        query.on('error', function(err) {
-            return res.status(404).json({'code': 0, 'message': 'Categoria Inexistente'});
+        var query = client.query("DELETE FROM skills WHERE nombre=($1) AND categoria=($2)",
+            [req.params.skill, req.params.category], function(err, result) {
+            rowsAffected = result.rowCount;
         });
 
+
         // After all data is returned, close connection and return results
-        query.on('end', function() {
+        query.on('end', function(result) {
             done();
+            if (rowsAffected == 0){
+                return res.status(404).json({'code': 0, 'message': 'Categoria Inexistente'});
+            }
             return res.status(204).json({});
         });
     });
@@ -162,7 +170,7 @@ router.post('/categories/:category', function(req, res){
         if(err) {
             done();
             console.log(err);
-            return res.status(500).json({success: false, data: err, context: '/categories'});
+            return res.status(500).json({code: 0, message: err});
         }
         // SQL Query > Insert Data
         var query = client.query('INSERT INTO skills(nombre, descripcion, categoria) values($1, $2, $3)',
@@ -197,11 +205,12 @@ router.put('/categories/:category/:skill', function(req, res){
         if(err) {
             done();
             console.log(err);
-            return res.status(500).json({success: false, data: err, context: '/skills'});
+            return res.status(500).json({code: 0, message: err});
         }
+
         // SQL Query > Insert Data
         var query = client.query('UPDATE skills SET categoria=($2),descripcion=($4) WHERE nombre=($1) AND categoria=($3)',
-            [data.nombre, data.newCategory, oldCategory, data.descripcion]);
+            [data.nombre, data.newCategory, oldCategory, data.descripcion])
 
         query.on('error', function(err) {
             return res.status(404).json({'code': 0, 'message': 'Categoria Inexistente'});

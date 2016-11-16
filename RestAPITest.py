@@ -8,7 +8,8 @@ from test.skillTest import TestSkill
 if __name__ == '__main__':
     testmodules = [
         'test.categoriaTest',
-        'test.skillTest'
+        'test.skillTest',
+        'test.jobPositionsTest'
     ]
 
     suite = unittest.TestSuite()

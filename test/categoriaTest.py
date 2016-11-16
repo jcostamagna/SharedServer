@@ -37,9 +37,16 @@ class CategoriaHandler():
         self.assertEqual(json.dumps(payload), json.dumps(json.loads(response.text)))
         self.assertEqual(400, response.status_code)
 
+    def CategoryRequestDelete(self, name):
+        return requests.delete(constant.URL + '/categories/' + name)
+
     def CategoryDeleteSimple(self, name):
-        response = requests.delete(constant.URL + '/categories/' + name)
+        response = self.CategoryRequestDelete(name)
         self.assertEqual(204, response.status_code)
+
+    def CategoryDeleteExpectError(self, name):
+        response = self.CategoryRequestDelete(name)
+        self.assertEqual(404, response.status_code)
 
     def getCategories(self):
         return requests.get(constant.URL + '/categories')
@@ -65,7 +72,7 @@ class CategoriaHandler():
 
     def updateCategoryExpectedError(self, oldName, newName, newDescription):
         response, payload = self.CategoryRequestUpdate(oldName, newName, newDescription)
-        self.assertEqual(json.dumps({'code': 0, 'message': 'No existe el recurso solicitado'}),
+        self.assertEqual(json.dumps({'code': 0, 'message': 'Categoria Inexistente'}),
                          json.dumps(json.loads(response.text)))
         self.assertEqual(404, response.status_code)
 
@@ -242,7 +249,24 @@ class TestCategoria(unittest.TestCase, CategoriaHandler):
         self.checkEmptyBDCategory()
 
         # Agrego categoria sin parametros
-        #self.CategoryInsertNoParametersExpectedError()
+        self.CategoryInsertNoParametersExpectedError()
+
+        self.checkEmptyBDCategory()
+
+    def testDeleteCategoryError(self):
+        self.checkEmptyBDCategory()
+
+        # Elimino categoria inexistente
+        self.CategoryDeleteExpectError('software')
+
+        self.checkEmptyBDCategory()
+
+
+    def testUpdateCategoryError(self):
+        self.checkEmptyBDCategory()
+
+        # Updateo categoria inexistente
+        self.updateCategoryExpectedError('sport', 'software', 'software activities new')
 
         self.checkEmptyBDCategory()
 
