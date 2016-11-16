@@ -32,7 +32,8 @@
     "morgan": "^1.7.0",
     "multer": "^1.2.0",
     "pg": "4.x",
-    "serve-favicon": "^2.3.0"
+    "serve-favicon": "^2.3.0",
+    "toobusy-js": "^0.5.1"
   },
   "preferGlobal": true,
   "private": true,
