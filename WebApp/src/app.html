@@ -33,7 +33,7 @@
                       JOB POSITIONS
               </md-button>
               <div ng-show="slideToggle_JP" layout ="column"  ng-click="toggleList()">
-                <md-button class="md-raised md-secondary slide-toggle" href="#/listado-job-positions">
+                <md-button class="md-raised md-secondary slide-toggle" ng-click="loadStuff('/job_positions')" href="#/listado-job-positions">
                         Listado
                 </md-button>
                 <md-button class="md-raised md-secondary slide-toggle" href="#/listado-job-categories">

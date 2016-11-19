@@ -26,11 +26,28 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       $http.get(url)
       .success((data) => {
         $scope.items = data;
+        console.log(data);
+        console.log(data.job_positions[0]);
+
       })
       .error((error) => {
         alert("Error obteniendo datos")
       });
   };
+
+  $scope.refreshCategories = function () {
+      $http.get('/categories')
+      .success((data) => {
+        $scope.categories = data.categories;
+      })
+      .error((error) => {
+        alert("Error obteniendo datos")
+      });
+  }
+
+  $scope.getCategories = function () {
+    return $scope.categories;
+  }
 
   $scope.delete = function (url) {
       for (var i = $scope.selected.length - 1; i >= 0; i--) {
@@ -87,6 +104,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
   
   
   $scope.loadStuff = function (url) {
+    $scope.refreshCategories();
     $scope.promise = $timeout(function () {
        $scope.get(url);
     },1000);
@@ -174,13 +192,32 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
 
   };
 
-
-
-
+  $scope.showAdd = function(ev, itemName) {
+    $scope.refreshCategories();
+    $scope.itemName = itemName;
 
 /*
-  $scope.showAdd = function(ev) {
-    $scope.get('/categories');
+
+            var data = {job_position:{
+                                name: "analista",
+                                description: "se rasca las bolas"
+                                }
+                    };
+            $http.post('/'+$scope.itemName+'s/categories/Analistas', JSON.stringify(data))
+            console.log(itemName);
+            console.log(data);
+
+
+            var data2 = {job_position:{
+                                name: "analista2",
+                                description: "se rasca las bolas"
+                                }
+                    };
+            $http.post('/'+$scope.itemName+'s/categories/Analistas', JSON.stringify(data2))
+            console.log(itemName);
+            console.log(data2);
+*/
+
     $mdDialog.show({
       targetEvent: ev,
       template: '<md-dialog aria-label="AddObject" ng-controller="AppController">'+
@@ -208,9 +245,10 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
                 ' <div class="md-dialog-actions" layout="row">'+
                 '   <span flex></span>'+
                 '   <md-button ng-click="add(user.firstName,user.description,category.name)" class="md-primary"> Guardar </md-button>'+
-                '   <md-button ng-click="answer(\'not useful\')"> Cancelar </md-button> </div></md-dialog>',
+                '   <md-button> Cancelar </md-button> </div></md-dialog>',
       locals: {
-        categories: $scope.items.categories
+        categories: $scope.categories,
+        itemName: $scope.itemName
       },
       controller: DialogController
     })
@@ -219,8 +257,9 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
     }, function() {
     });
 
-    function DialogController($scope, $mdDialog, categories, $http) {
+    function DialogController($scope, $mdDialog, categories, itemName, $http) {
       $scope.categories = categories;
+      $scope.itemName = itemName;
       
       $scope.hide = function() {
         $mdDialog.hide();
@@ -235,23 +274,21 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       };
 
       $scope.add = function(name,description,category) {
-        console.log("Se quiere agregar el name: "+name+", descripcion: "+description+", categoria: "+category);
-        
-        var data = {category:{
+        var data = {itemName:{
                                 name: name,
                                 description: description
                                 }
                     };
-        $http.post("/categories", JSON.stringify(data)).
-            then(function (data, status, headers, config) { alert("success") },
-                 function (data, status, headers, config) { alert("error") });  
+        $http.post('/'+$scope.itemName+'s/categories/'+$scope.categories, JSON.stringify(data)).
+            then(function (data, status, headers, config) {},
+                 function (data, status, headers, config) { alert("Error agregando item.") });  
             
         $mdDialog.hide("OK");
       }
     };
 
   };
-*/
+
 }]);
 
 app.animation('.slide-toggle', ['$animateCss', function($animateCss) {
