@@ -2,6 +2,7 @@ var app = angular.module('App', ['ngMaterial', 'ngMdIcons', 'md.data.table', 'ng
 
 app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDialog','$http', '$timeout', function($mdEditDialog,$scope,$mdSidenav,$mdDialog,$http,$timeout) {
 
+//{"name":"Nueva","description":"nuevacategoria"} 
   $scope.selected = [];
   $scope.limitOptions = [5, 10, 15];
 
@@ -32,6 +33,13 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       });
   };
 
+  $scope.delete = function (url) {
+      for (var i = $scope.selected.length - 1; i >= 0; i--) {
+        $http.delete(url+$scope.selected[i].name);
+      }
+      $scope.selected = [];
+      $scope.loadStuff(url);
+  }
 
   $scope.editComment = function (event, item) {
     event.stopPropagation(); // in case autoselect is enabled
