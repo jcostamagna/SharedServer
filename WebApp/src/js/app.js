@@ -2,7 +2,6 @@ var app = angular.module('App', ['ngMaterial', 'ngMdIcons', 'md.data.table', 'ng
 
 app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDialog','$http', '$timeout', function($mdEditDialog,$scope,$mdSidenav,$mdDialog,$http,$timeout) {
 
-//{"name":"Nueva","description":"nuevacategoria"} 
   $scope.selected = [];
   $scope.limitOptions = [5, 10, 15];
 
@@ -49,6 +48,13 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       placeholder: 'Agregar descripcion',
       save: function (input) {
         item.description = input.$modelValue;
+        var data = {category:{
+                                name: item.name,
+                                description: input.$modelValue
+                                }
+                    };
+        $http.post('/categories/'+item.name,JSON.stringify(data));
+        $scope.loadStuff('/categories/');
       },
       targetEvent: event,
       title: 'Agregar descripcion',

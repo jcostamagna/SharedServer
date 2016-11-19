@@ -83,7 +83,7 @@
               <tr md-row md-select="category" md-on-select="logItem" md-auto-select="options.autoSelect" ng-repeat="category in items.categories | filter: search.who | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
                 <td md-cell>{{category.name}}</td>
                 
-                <td md-cell ng-click="editComment($event, category)" ng-class="{'md-placeholder': !category.description}">
+                <td md-cell ng-click="editComment($event, category)" ng-class="{'md-placeholder': !category.description}" aria-label="descripcion">
                   {{category.description || 'Agregar descripcion'}}
                 </td>
 
