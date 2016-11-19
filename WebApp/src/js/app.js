@@ -47,12 +47,20 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
     return $scope.categories;
   }
 
-  $scope.delete = function (url) {
+  $scope.deleteCategory = function (url) {
       for (var i = $scope.selected.length - 1; i >= 0; i--) {
         $http.delete(url+$scope.selected[i].name);
       }
       $scope.selected = [];
       $scope.loadStuff(url);
+  }
+
+  $scope.delete = function (url, itemName) {
+      for (var i = $scope.selected.length - 1; i >= 0; i--) {
+        $http.delete(url+$scope.selected[i].category+'/'+$scope.selected[i].name);
+      }
+      $scope.selected = [];
+      $scope.loadStuff('/'+itemName);
   }
 
   $scope.editComment = function (event, item, url) {
@@ -152,7 +160,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
                 ' <div class="md-dialog-actions" layout="row">'+
                 '   <span flex></span>'+
                 '   <md-button ng-click="add(user.firstName,user.description)" class="md-primary"> Guardar </md-button>'+
-                '   <md-button> Cancelar </md-button> </div></md-dialog>',
+                '   <md-button ng-click="answer(\'CANCEL\')"> Cancelar </md-button> </div></md-dialog>',
       controller: DialogController
     })
     .then(function(answer) {
@@ -221,7 +229,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
                 ' <div class="md-dialog-actions" layout="row">'+
                 '   <span flex></span>'+
                 '   <md-button ng-click="add(user.firstName,user.description,category.name)" class="md-primary"> Guardar </md-button>'+
-                '   <md-button> Cancelar </md-button> </div></md-dialog>',
+                '   <md-button ng-click="answer(\'CANCEL\')"> Cancelar </md-button> </div></md-dialog>',
       locals: {
         categories: $scope.categories,
         itemName: $scope.itemName

@@ -43,7 +43,7 @@
           <div class="md-toolbar-tools">
             <span>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</span>
             <div flex></div>
-            <md-button class="md-icon-button" aria-label="Delete ">
+            <md-button class="md-icon-button" ng-click="delete('/job_positions/categories/','job_positions')" aria-label="Delete ">
               <ng-md-icon icon="delete"></ng-md-icon>
             </md-button>  
           </div>
