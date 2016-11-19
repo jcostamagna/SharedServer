@@ -13,9 +13,11 @@ var connectionString = process.env.DATABASE_URL || 'postgres://uvwiyhoazhndqk:28
 var client = new pg.Client(connectionString);
 client.connect();
 
+/*
 var query = client.query(
     'DROP TABLE IF EXISTS job_positions');
 query.on('end', () => { client.end(); });
+*/
 
 query = client.query(
     'CREATE TABLE IF NOT EXISTS job_positions(nombre VARCHAR(40), descripcion VARCHAR(140),' +
