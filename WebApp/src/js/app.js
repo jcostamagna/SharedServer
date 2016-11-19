@@ -26,8 +26,6 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       $http.get(url)
       .success((data) => {
         $scope.items = data;
-        console.log(data);
-        console.log(data.job_positions[0]);
 
       })
       .error((error) => {
@@ -196,28 +194,6 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
     $scope.refreshCategories();
     $scope.itemName = itemName;
 
-/*
-
-            var data = {job_position:{
-                                name: "analista",
-                                description: "se rasca las bolas"
-                                }
-                    };
-            $http.post('/'+$scope.itemName+'s/categories/Analistas', JSON.stringify(data))
-            console.log(itemName);
-            console.log(data);
-
-
-            var data2 = {job_position:{
-                                name: "analista2",
-                                description: "se rasca las bolas"
-                                }
-                    };
-            $http.post('/'+$scope.itemName+'s/categories/Analistas', JSON.stringify(data2))
-            console.log(itemName);
-            console.log(data2);
-*/
-
     $mdDialog.show({
       targetEvent: ev,
       template: '<md-dialog aria-label="AddObject" ng-controller="AppController">'+
@@ -253,7 +229,9 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       controller: DialogController
     })
     .then(function(answer) {
-      console.log('Saved "' + answer + '.');
+      if (answer == 'OK') {
+        $scope.loadStuff('/'+$scope.itemName+'s');
+      }
     }, function() {
     });
 
@@ -274,12 +252,23 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       };
 
       $scope.add = function(name,description,category) {
-        var data = {itemName:{
-                                name: name,
-                                description: description
-                                }
-                    };
-        $http.post('/'+$scope.itemName+'s/categories/'+$scope.categories, JSON.stringify(data)).
+        if ($scope.itemName == 'skill') {
+          var data = {skill:{
+                                  name: name,
+                                  description: description
+                                  }
+                      };
+        } else if ($scope.itemName == 'job_position') {
+          var data = {job_position:{
+                                  name: name,
+                                  description: description
+                                  }
+                      };
+        } else {
+          alert("Error agregando item.");
+          return;
+        }
+        $http.post('/'+$scope.itemName+'s/categories/'+category, JSON.stringify(data)).
             then(function (data, status, headers, config) {},
                  function (data, status, headers, config) { alert("Error agregando item.") });  
             
