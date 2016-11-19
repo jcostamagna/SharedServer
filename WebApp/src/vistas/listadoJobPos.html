@@ -90,7 +90,7 @@
                   </md-select>
                 </td>
                 
-                <td md-cell ng-click="editComment($event, dessert)" ng-class="{'md-placeholder': !job_pos.description}">
+                <td md-cell ng-click="editComment($event, job_pos, '/job_positions/categories/', 'job_position')" ng-class="{'md-placeholder': !job_pos.description}">
                   {{job_pos.description || 'Agregar Descripcion'}}
                 </td>
               </tr>

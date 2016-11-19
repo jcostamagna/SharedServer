@@ -63,7 +63,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       $scope.loadStuff('/'+itemName);
   }
 
-  $scope.editComment = function (event, item, url) {
+  $scope.editCategoryComment = function (event, item, url) {
     event.stopPropagation(); // in case autoselect is enabled
     
     var editDialog = {
@@ -78,6 +78,59 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
                     };
         $http.post(url+item.name,JSON.stringify(data));
         $scope.loadStuff(url);
+      },
+      targetEvent: event,
+      title: 'Agregar descripcion',
+      validators: {
+        'md-maxlength': 50
+      }
+    };
+  
+    var promise;
+    
+    if($scope.options.largeEditDialog) {
+      promise = $mdEditDialog.large(editDialog);
+    } else {
+      promise = $mdEditDialog.small(editDialog);
+    }
+    
+    promise.then(function (ctrl) {
+      var input = ctrl.getInput();
+      
+      input.$viewChangeListeners.push(function () {
+        input.$setValidity('test', input.$modelValue !== 'test');
+      });
+    });
+  };
+
+  $scope.editComment = function (event, item, url, itemName) {
+    event.stopPropagation(); // in case autoselect is enabled
+
+    var editDialog = {
+      modelValue: item.description,
+      placeholder: 'Agregar descripcion',
+      save: function (input) {
+        if (itemName == 'job_position') {
+          var data = {job_position:{
+                                    name: item.name,
+                                    category: item.category,
+                                    description: input.$modelValue
+                                }
+                     };
+        } else if (itemName == 'skill') {
+          var data = {skill:{
+                                    name: item.name,
+                                    category: item.category,
+                                    description: input.$modelValue
+                                }
+                     };
+        } else {
+              alert("Error modificando comentario.");
+              return;
+        }
+        item.description = input.$modelValue;
+        $http.put(url+item.category+'/'+item.name,JSON.stringify(data));
+        $scope.loadStuff('/'+itemName+'s');
       },
       targetEvent: event,
       title: 'Agregar descripcion',
