@@ -28,7 +28,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
         $scope.items = data;
       })
       .error((error) => {
-        console.log('Error: ' + error);
+        alert("Error obteniendo datos")
       });
   };
 
@@ -40,7 +40,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       $scope.loadStuff(url);
   }
 
-  $scope.editComment = function (event, item) {
+  $scope.editComment = function (event, item, url) {
     event.stopPropagation(); // in case autoselect is enabled
     
     var editDialog = {
@@ -53,8 +53,8 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
                                 description: input.$modelValue
                                 }
                     };
-        $http.post('/categories/'+item.name,JSON.stringify(data));
-        $scope.loadStuff('/categories/');
+        $http.post(url+item.name,JSON.stringify(data));
+        $scope.loadStuff(url);
       },
       targetEvent: event,
       title: 'Agregar descripcion',
@@ -87,10 +87,9 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
   
   
   $scope.loadStuff = function (url) {
-    $scope.url = url;
     $scope.promise = $timeout(function () {
-       $scope.get($scope.url);
-    }, 9000);
+       $scope.get(url);
+    },1000);
   }
   
   $scope.logItem = function (item) {
@@ -137,14 +136,13 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
                 ' <div class="md-dialog-actions" layout="row">'+
                 '   <span flex></span>'+
                 '   <md-button ng-click="add(user.firstName,user.description)" class="md-primary"> Guardar </md-button>'+
-                '   <md-button ng-click="answer(\'dialogo cancelado\')"> Cancelar </md-button> </div></md-dialog>',
+                '   <md-button> Cancelar </md-button> </div></md-dialog>',
       controller: DialogController
     })
     .then(function(answer) {
       if (answer == 'OK') {
         $scope.loadStuff('/categories');
       }
-      console.log(answer);
     }, function() {
     });
 
