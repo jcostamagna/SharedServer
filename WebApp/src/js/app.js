@@ -4,6 +4,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
 
   $scope.selected = [];
   $scope.limitOptions = [5, 10, 15];
+  $scope.category = null;
 
   $scope.options = {
     rowSelection: true,
@@ -102,6 +103,29 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       });
     });
   };
+
+  $scope.categoryChange = function (url, item, itemName, newCategory) {
+    if (itemName == 'job_position') {
+          var data = {job_position:{
+                                    name: item.name,
+                                    category: newCategory.name,
+                                    description: item.description
+                                }
+                     };
+    } else if (itemName == 'skill') {
+          var data = {skill:{
+                                    name: item.name,
+                                    category: newCategory.name,
+                                    description: item.description
+                            }
+                     };
+    } else {
+              alert("Error modificando comentario.");
+              return;
+    }
+    $http.put(url+item.category+'/'+item.name,JSON.stringify(data));
+    $scope.loadStuff('/'+itemName+'s');
+  }
 
   $scope.editComment = function (event, item, url, itemName) {
     event.stopPropagation(); // in case autoselect is enabled

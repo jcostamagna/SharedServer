@@ -85,7 +85,7 @@
                 
                 
                 <td md-cell>
-                  <md-select ng-model="job_pos.category" placeholder="{{job_pos.category}}">
+                  <md-select ng-model="category" ng-change="categoryChange('/job_positions/categories/', {{job_pos}}, 'job_position', category)" placeholder="{{job_pos.category}}">
                     <md-option ng-value="category" ng-repeat="category in getCategories()">{{category.name}}</md-option>
                   </md-select>
                 </td>
