@@ -72,7 +72,7 @@
             <thead ng-if="!options.decapitate" md-head md-order="query.order" md-on-reorder="logOrder">
               <tr md-row style="background-color:rgb(220,220,220);">
                 <th md-column md-order-by="name"><span style="font-size:16px;">Job Position</span></th>
-                <th md-column md-order-by="type"><span style="font-size:16px;">Categoria</span></th>
+                <th md-column md-order-by="category"><span style="font-size:16px;">Categoria</span></th>
                 <th md-column>
                   <md-icon>comments</md-icon>
                   <span style="font-size:16px;">Descripcion</span>
@@ -85,7 +85,7 @@
                 
                 
                 <td md-cell>
-                  <md-select ng-model="category" ng-change="categoryChange('/job_positions/categories/', {{job_pos}}, 'job_position', category)" placeholder="{{job_pos.category}}">
+                  <md-select ng-model="category.name" ng-change="categoryChange('/job_positions/categories/', {{job_pos}}, 'job_position', category.name)" placeholder="{{job_pos.category}}">
                     <md-option ng-value="category" ng-repeat="category in getCategories()">{{category.name}}</md-option>
                   </md-select>
                 </td>
