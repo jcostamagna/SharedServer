@@ -72,7 +72,7 @@
             <thead ng-if="!options.decapitate" md-head md-order="query.order" md-on-reorder="logOrder">
               <tr md-row style="background-color:rgb(220,220,220);">
                 <th md-column md-order-by="name"><span style="font-size:16px;">Skill</span></th>
-                <th md-column md-order-by="skill"><span style="font-size:16px;">Categoria</span></th>
+                <th md-column md-order-by="category"><span style="font-size:16px;">Categoria</span></th>
                 <th md-column>
                   <md-icon>comments</md-icon>
                   <span style="font-size:16px;">Descripcion</span>
@@ -83,11 +83,11 @@
               <tr md-row md-select="skill" md-on-select="logItem" md-auto-select="options.autoSelect" ng-repeat="skill in items.skills | filter: search.who | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
                 <td md-cell>{{skill.name}}</td>
                 <td md-cell>
-                  <md-select ng-model="skill.category" placeholder="{{skill.category}}">
+                  <md-select ng-model="category.name" ng-change="categoryChange('/skills/categories/', {{skill}}, 'skill', category.name)"  placeholder="{{skill.category}}">
                     <md-option ng-value="category" ng-repeat="category in getCategories()">{{category.name}}</md-option>
                   </md-select>
                 </td>
-                <td md-cell ng-click="editComment($event, dessert)" ng-class="{'md-placeholder': !skill.description}">
+                <td md-cell ng-click="editComment($event, skill, '/skills/categories/', 'skill')" ng-class="{'md-placeholder': !skill.description}">
                   {{skill.description || 'Agregar Descripcion'}}
                 </td>
               </tr>
