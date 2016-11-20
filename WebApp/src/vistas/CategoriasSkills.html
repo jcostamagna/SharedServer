@@ -18,7 +18,7 @@
 
 
   <div class="box1">
-    <md-content layout="column" flex ng-controller="nutritionController">
+    <md-content layout="column" flex ng-controller="AppController">
             
       <md-card style="background-color:rgb(240,240,240);">
         
@@ -29,7 +29,7 @@
             <md-button class="md-icon-button" ng-click="showSearch = !showSearch" aria-label="Search ">
               <ng-md-icon icon="search"></ng-md-icon>
             </md-button>
-            <md-button class="md-icon-button" ng-click="loadStuff()" aria-label="Refresh ">
+            <md-button class="md-icon-button" ng-click="loadStuff('/categories')" aria-label="Refresh ">
               <ng-md-icon icon="refresh"></md-icon>
             </md-button>
           </div>
@@ -59,8 +59,8 @@
               </tr>
             </thead>
             <tbody md-body>
-              <tr md-row md-select="dessert" md-on-select="logItem" md-auto-select="options.autoSelect" ng-repeat="dessert in desserts.data | filter: search.who | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
-                <td md-cell>{{dessert.name}}</td>
+              <tr md-row md-select="category" md-on-select="logItem" md-auto-select="options.autoSelect" ng-repeat="category in items.categories | filter: search.who | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+                <td md-cell>{{category.name}}</td>
                 <td md-cell>                
                   <md-chips>
                     <md-chip>Programador Junior</md-chip>
@@ -80,7 +80,7 @@
           </table>
         </md-table-container>
 
-        <md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{desserts.count}}" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks" md-on-paginate="logPagination"></md-table-pagination>
+        <md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{items.metadata.count}}" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks" md-on-paginate="logPagination"></md-table-pagination>
       </md-card>
     </md-content>
     
