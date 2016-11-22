@@ -38,6 +38,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       $http.get('/categories')
       .success((data) => {
         $scope.categories_ = data.categories;
+        $scope.countOfItems = data.metadata.count;
 
         $scope.categories_asociated = [];
 
