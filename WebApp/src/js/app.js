@@ -4,7 +4,6 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
 
   $scope.selected = [];
   $scope.limitOptions = [5, 10, 15];
-  //$scope.categories = [];
 
   $scope.options = {
     rowSelection: true,
@@ -35,36 +34,29 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
   };
 
   $scope.getCategoriesForItem = function (itemName) {
-         $scope.promise = $timeout(function () {
-      // refreshCategories
+    $scope.promise = $timeout(function () {
       $http.get('/categories')
       .success((data) => {
-        $scope.categories = data.categories;
+        $scope.categories_ = data.categories;
 
         $scope.categories_asociated = [];
-        $scope.categories_asociated.name = [];
-        $scope.categories_asociated.skills = [];
-        for (var i = $scope.categories.length - 1; i >= 0; i--) {
-          $http.get('/'+itemName+'/categories/'+$scope.categories[i].name)
+
+        $scope.categories_.forEach(function(category_item, idx){
+          $http.get('/'+itemName+'/categories/'+category_item.name)
           .success((data) => {
-            console.log("hola    "+data.skills[0]);
-            $scope.categories_asociated.name.push($scope.categories[i].name);
-            $scope.categories_asociated.skills.push(data.itemName);
+            $scope.categories_asociated.push({name:category_item.name,skills:data.skills});
           })
           .error((error) => {
             alert("Error obteniendo datos");
             return;
           });
-        }
-        console.log($scope.categories_asociated);
-
-
+        });
       })
       .error((error) => {
         alert("Error obteniendo datos")
       });
       /////////////////////
-    },10000);
+    },2000);
   }
 
   $scope.refreshCategories = function () {

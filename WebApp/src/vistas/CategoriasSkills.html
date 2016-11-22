@@ -59,17 +59,12 @@
               </tr>
             </thead>
             <tbody md-body>
-              <tr md-row md-select="category" md-on-select="logItem" md-auto-select="options.autoSelect" ng-repeat="category in categories_asociated.name | filter: search.who | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
-                <td md-cell>{{category}}</td>
+              <tr md-row md-select="category" md-on-select="logItem" md-auto-select="options.autoSelect" ng-repeat="category in categories_asociated | filter: search.who | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+                <td md-cell>{{category.name}}</td>
                 <td md-cell>                
                   <md-chips ng-repeat="skill in category.skills">
                     <md-chip>{{skill.name}}</md-chip>
                   </md-chips>
-                  <!--
-                  <md-select ng-model="dessert.type" placeholder="Other">
-                    <md-option ng-value="type" ng-repeat="type in getTypes()">{{type}}</md-option>
-                  </md-select>
-                  -->
                 </td>
               </tr>
             </tbody>
