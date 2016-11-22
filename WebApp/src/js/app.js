@@ -44,7 +44,14 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
         $scope.categories_.forEach(function(category_item, idx){
           $http.get('/'+itemName+'/categories/'+category_item.name)
           .success((data) => {
-            $scope.categories_asociated.push({name:category_item.name,skills:data.skills});
+            if (itemName == 'skills') {
+              $scope.categories_asociated.push({name:category_item.name,skills:data.skills});
+            } else if (itemName == 'job_positions') {
+              $scope.categories_asociated.push({name:category_item.name,job_positions:data.job_positions});
+            } else {
+              alert("Error en itemName.");
+              return;
+            }
           })
           .error((error) => {
             alert("Error obteniendo datos");

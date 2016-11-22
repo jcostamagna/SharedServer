@@ -29,7 +29,7 @@
             <md-button class="md-icon-button" ng-click="showSearch = !showSearch" aria-label="Search ">
               <ng-md-icon icon="search"></ng-md-icon>
             </md-button>
-            <md-button class="md-icon-button" ng-click="loadStuff('/categories')" aria-label="Refresh ">
+            <md-button class="md-icon-button" ng-click="getCategoriesForItem('job_positions')" aria-label="Refresh ">
               <ng-md-icon icon="refresh"></md-icon>
             </md-button>
           </div>
@@ -62,15 +62,11 @@
               </tr>
             </thead>
             <tbody md-body>
-              <tr md-row md-select="category" md-on-select="logItem" md-auto-select="options.autoSelect" ng-repeat="category in items.categories | filter: search.who | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+              <tr md-row md-select="category" md-on-select="logItem" md-auto-select="options.autoSelect" ng-repeat="category in categories_asociated | filter: search.who | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
                 <td md-cell>{{category.name}}</td>
                 <td md-cell>
-                  <md-chips>
-                    <md-chip>Programador Junior</md-chip>
-                    <md-chip>Programador Senior</md-chip>
-                    <md-chip>Software</md-chip>
-                    <md-chip>CEO</md-chip>
-                    <md-chip>Directivo</md-chip>
+                  <md-chips ng-repeat="job_pos in category.job_positions">
+                    <md-chip>{{job_pos.name}}</md-chip>
                   </md-chips>
                 </td>
               </tr>
