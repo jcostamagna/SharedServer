@@ -4,7 +4,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
 
   $scope.selected = [];
   $scope.limitOptions = [5, 10, 15];
-  $scope.category = null;
+  $scope.categories = [];
 
   $scope.options = {
     rowSelection: true,
@@ -33,6 +33,39 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
         alert("Error obteniendo datos")
       });
   };
+
+  $scope.getCategoriesForItem = function (itemName) {
+         $scope.promise = $timeout(function () {
+      // refreshCategories
+      $http.get('/categories')
+      .success((data) => {
+        $scope.categories = data.categories;
+
+        $scope.categories_asociated = [];
+        $scope.categories_asociated.name = [];
+        $scope.categories_asociated.skills = [];
+        for (var i = $scope.categories.length - 1; i >= 0; i--) {
+          $http.get('/'+itemName+'/categories/'+$scope.categories[i].name)
+          .success((data) => {
+            console.log("hola    "+data.skills[0]);
+            $scope.categories_asociated.name.push($scope.categories[i].name);
+            $scope.categories_asociated.skills.push(data.itemName);
+          })
+          .error((error) => {
+            alert("Error obteniendo datos");
+            return;
+          });
+        }
+        console.log($scope.categories_asociated);
+
+
+      })
+      .error((error) => {
+        alert("Error obteniendo datos")
+      });
+      /////////////////////
+    },10000);
+  }
 
   $scope.refreshCategories = function () {
       $http.get('/categories')
