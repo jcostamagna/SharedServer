@@ -4,7 +4,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
 
   $scope.selected = [];
   $scope.limitOptions = [5, 10, 15];
-  $scope.categories = [];
+  //$scope.categories = [];
 
   $scope.options = {
     rowSelection: true,
