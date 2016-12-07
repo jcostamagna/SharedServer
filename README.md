@@ -1,20 +1,18 @@
 # Taller de Programacion II - Shared Server </br>
- ![Build Status](https://travis-ci.org/nicomoccagatta/SharedServer.svg?branch=master) </br>
+## Jobify - 2do cuatrimestre 2016
+ ![Build Status](https://travis-ci.org/jcostamagna/SharedServer.svg?branch=master) </br>
 
-## Instrucciones para iniciar la webApp </br>
+## Instrucciones para hacer el deploy local </br>
 1) Para armar la imagen docker </br>
-``$ cd WebApp``</br>
-``$ docker build -t webapp . ``</br>
-2) Para iniciar la webapp </br>
-``$ docker run -p 49100:8080 webapp`` </br>
-3) Ahora se puede acceder a la webapp accediendo al navegador e ingresando</br>
-``http://localhost:49100`` </br>
+Hacemos cd sobre la carpeta donde descargamos el repositorio, luego hacemos
+``$ docker build -t ouruser/servernode . ``</br>
+2) Para iniciar el server </br>
+``$ docker run -p 8080:8080 ouruser/servernode`` </br>
+3) Ahora se puede usar la webapp accediendo al navegador e ingresando</br>
+``http://localhost:8080`` </br>
 
-
-### Instrucciones para correr el servidor NodeJS con Docker </br>
-1) Para armar la imagen docker </br>
-``$ docker build -t node-web-app . ``</br>
-2) Para correr el servidor </br>
-``$ docker run -p 49200:8080 node-web-app`` </br>
-3) Ahora se puede acceder al servidor por consola con </br>
-``$ curl -i localhost:49160`` </br>
+## Integrantes
+### Costamagna, Juan
+### Levinas, Alejandro
+### Moccagatta, Nicolas
+### Palma, Leandro
