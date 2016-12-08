@@ -26,7 +26,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       $http.get(url)
       .success((data) => {
         $scope.items = data;
-
+        $scope.selected = [];
       })
       .error((error) => {
         alert("Error obteniendo datos")
