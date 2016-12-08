@@ -254,13 +254,13 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
                 '     <md-content class="md-padding">'+
                 '       <form name="userForm">'+
                 '          <div layout="column" flex>'+
-                '             <md-input-container flex>'+
+                '             <md-input-container flex my-enter="add(user.firstName,user.description)">'+
                 '               <input ng-model="user.firstName" placeholder="Nombre"> '+
                 '             </md-input-container> '+
                 '          </div>'+
                 ''+
                 ''+
-                '          <md-input-container flex>'+
+                '          <md-input-container flex my-enter="add(user.firstName,user.description)">'+
                 '             <label>Descripcion</label> '+
                 '             <textarea ng-model="user.description" columns="1" md-maxlength="50">'+
                 '             </textarea> '+
@@ -274,7 +274,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       controller: DialogController
     })
     .then(function(answer) {
-      if (answer == 'OK') {
+      if (answer === 'OK') {
         $scope.loadStuff('/categories');
       }
     }, function() {
@@ -295,6 +295,15 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       };
 
       $scope.add = function(name,description) {
+        if(name === undefined) {
+          alert("Error agregando item: nombre invalido");
+          //$mdDialog.hide("ERROR");
+          return;
+        } else if(description === undefined) {
+          alert("Error agregando item: descripcion vacia");
+          //$mdDialog.hide("ERROR");
+          return;
+        }
         var data = {category:{
                                 name: name,
                                 description: description
@@ -318,7 +327,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
                 '     <md-content class="md-padding">'+
                 '       <form name="userForm">'+
                 '          <div layout="column" flex>'+
-                '             <md-input-container flex>'+
+                '             <md-input-container flex my-enter="add(user.firstName,user.description,category.name)">'+
                 '               <input ng-model="user.firstName" placeholder="Nombre"> '+
                 '             </md-input-container> '+
                 '          </div>'+
@@ -329,7 +338,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
                 '               </md-option>'+
                 '          </md-select>'+
                 ''+
-                '          <md-input-container flex>'+
+                '          <md-input-container flex my-enter="add(user.firstName,user.description,category.name)">'+
                 '             <label>Descripcion</label> '+
                 '             <textarea ng-model="user.description" columns="1" md-maxlength="50">'+
                 '             </textarea> '+
@@ -347,7 +356,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       controller: DialogController
     })
     .then(function(answer) {
-      if (answer == 'OK') {
+      if (answer === 'OK') {
         $scope.loadStuff('/'+$scope.itemName+'s');
       }
     }, function() {
@@ -370,6 +379,19 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
       };
 
       $scope.add = function(name,description,category) {
+        if(name === undefined) {
+          alert("Error agregando item: nombre invalido");
+          //$mdDialog.hide("ERROR");
+          return;
+        } else if(category === undefined) {
+          alert("Error agregando item: categoria no seleccionada");
+          //$mdDialog.hide("ERROR");
+          return;
+        } else if(description === undefined) {
+          alert("Error agregando item: descripcion vacia");
+          //$mdDialog.hide("ERROR");
+          return;
+        }
         if ($scope.itemName == 'skill') {
           var data = {skill:{
                                   name: name,
@@ -386,9 +408,7 @@ app.controller('AppController', ['$mdEditDialog', '$scope','$mdSidenav','$mdDial
           alert("Error agregando item.");
           return;
         }
-        $http.post('/'+$scope.itemName+'s/categories/'+category, JSON.stringify(data)).
-            then(function (data, status, headers, config) {},
-                 function (data, status, headers, config) { alert("Error agregando item.") });  
+        $http.post('/'+$scope.itemName+'s/categories/'+category, JSON.stringify(data));
             
         $mdDialog.hide("OK");
       }
@@ -457,4 +477,17 @@ $routeProvider
                 controller: "AppController",
                 templateUrl: "vistas/Categorias.html"
             });
+});
+
+
+app.directive('myEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if(event.which === 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.myEnter);
+                });
+            }
+        });
+    };
 });

@@ -70,7 +70,7 @@ app.use(function(req, res, next){
 });
 
 var server = app.listen(process.env.PORT || PORT);
-console.log('Running on http://localhost:' + process.env.PORT || PORT);
+console.log('Running on http://localhost:' + PORT);
 
 process.on('SIGINT', function() {
   server.close();
