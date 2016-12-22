@@ -15,7 +15,7 @@ Hacemos cd sobre la carpeta donde descargamos el repositorio, luego hacemos </br
 [**ACCEDER**](http://tallersharedserver.herokuapp.com) </br></br>
 
 ## Integrantes
-#### Costamagna, Juan
-#### Levinas, Alejandro
+#### Costamagna, Juan Ignacio
+#### Levinas, Alejandro Pablo
 #### Moccagatta, Nicolas
 #### Palma, Leandro
